@@ -13,14 +13,8 @@ library(PFUSetup)
 ## Downloading data from drake cache
 ################################################################################
 
-## Establishes path to the drake cache
-cache_path <- PFUSetup::get_abs_paths()$drake_cache_folder
-
-# # Set up the root directory
-# root <- rprojroot::is_rstudio_project
-#
-# # Identifies the file path for the drake cache
-# cache_path <- root$find_file(".drake")
+# Establishes path to the drake cache
+cache_path <- file.path(dirname(getwd()), "PFU-Database", ".drake")
 
 # Creates a list of the countries in the drake workflow, set in the _drake.R script
 countries <- drake::readd(SEAPSUTWorkflow::target_names$countries,
@@ -126,7 +120,8 @@ PSUT_etas <- PSUT_metrics_total_i %>%
   tidyr::pivot_wider(names_from = Stage,
                      values_from = EX) %>%
   dplyr::group_by(Country, Method, Energy.type, Year) %>%
-  tidyr::fill(Primary, .direction = "down", .by_group = TRUE) %>%
+  # dplyr::arrange(Year, .by_group = TRUE) %>%
+  tidyr::fill(Primary, .direction = "down") %>% # , .by_group = TRUE
   dplyr::filter(Gross.Net != "Neither") %>%
   dplyr::group_by(Country, Method, Energy.type, Gross.Net, Year) %>%
   dplyr::mutate("Eta.fu" = Useful / Final) %>%

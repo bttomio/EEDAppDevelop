@@ -1,63 +1,63 @@
 # Establishes UI module function
 rebound_dashUI <- function(id) {
-  
+
   ns <- NS(id)
-  
+
   fluidRow(
-    
+
     # Sets table style - Stages table
     tags$head(tags$style("#stages_table table {background-color: white; }", media="screen", type="text/css")),
     # Sets table style - Rebound results table
     tags$head(tags$style("#results_table table {background-color: white; }", media="screen", type="text/css")),
-    
+
     # use_cicerone(),
-    
+
     # withMathJax(),
-    
+
 ################################################################################
 # Sets height of Variables box #
-################################################################################    
-    
+################################################################################
+
     # tags$head(tags$script('
     #   // Define function to set height of "map" and "map_container"
     #   setHeight = function() {
     #     var window_height = $(window).height();
     #     var header_height = $(".main-header").height();
-    # 
+    #
     #     var boxHeight = window_height - header_height - 30;
-    # 
+    #
     #     $("#Variables_rebound").height(boxHeight);
     #   // $("#map").height(boxHeight - 20);
     #   };
-    # 
+    #
     #   // Set input$box_height when the connection is established
     #   $(document).on("shiny:connected", function(event) {
     #     setHeight();
     #   });
-    # 
-    #   // Refresh the box height on every window resize event    
+    #
+    #   // Refresh the box height on every window resize event
     #   $(window).on("resize", function(){
     #     setHeight();
     #   });
     # ')),
-    
+
 ################################################################################
 # Variables in dropdown menu #
-################################################################################ 
-    
+################################################################################
+
   # shinyWidgets::dropdownButton(
-  #   
+  #
   #   # Dropdown button characteristics
   #   circle = FALSE,
   #   size = "sm",
   #   status = "default",
-  #   icon = icon("gear"), 
+  #   icon = icon("gear"),
   #   width = "300px",
   #   inline = FALSE,
-  #   
+  #
   #   tooltip = tooltipOptions(title = "Rebound Parameters"),
-  #   
-  #   
+  #
+  #
   #   # Inputs
   #   selectizeInput(
   #     inputId = ns("Example"),
@@ -68,42 +68,42 @@ rebound_dashUI <- function(id) {
   #     width = "300px",
   #     options = list(dropdownParent = 'body')
   #   ),
-  #   
+  #
   #   textInput(
   #     inputId = ns("Case"),
   #     label = "Case:",
   #     value = "",
   #     width = "300px"
   #   ),
-  #   
+  #
   #   textInput(
   #     inputId = ns("Original"),
   #     label = "Original:",
   #     value = "",
   #     width = "300px"
   #   ),
-  #   
+  #
   #   textInput(
   #     inputId = ns("Upgrade"),
   #     label = "Upgrade:",
   #     value = "",
   #     width = "300px"
   #   ),
-  #   
+  #
   #   textInput(
   #     inputId = ns("service_unit"),
   #     label = "Service Unit:",
   #     value = "",
   #     width = "300px"
   #   ),
-  #   
+  #
   #   textInput(
   #     inputId = ns("energy_engr_unit"),
   #     label = "Energy Unit:",
   #     value = "",
   #     width = "300px"
   #   ),
-  #   
+  #
   #   numericInput(
   #     inputId = ns("k"),
   #     label = HTML("Macro Factor (k) [-]:"),
@@ -113,7 +113,7 @@ rebound_dashUI <- function(id) {
   #     step = NA,
   #     width = "300px"
   #   ),
-  #   
+  #
   #   numericInput(
   #     inputId = ns("p_E_engr_units"),
   #     label = HTML("Price of energy [?]:"),
@@ -123,7 +123,7 @@ rebound_dashUI <- function(id) {
   #     step = NA,
   #     width = "300px"
   #   ),
-  #   
+  #
   #   numericInput(
   #     inputId = ns("MJ_energy_engr_unit"),
   #     label = HTML("MJ/energy_eng_unit:"),
@@ -133,7 +133,7 @@ rebound_dashUI <- function(id) {
   #     step = NA,
   #     width = "300px"
   #   ),
-  #   
+  #
   #   numericInput(
   #     inputId = ns("I_E"),
   #     label = HTML("Economy energy intensity [MJ/$]:"),
@@ -143,7 +143,7 @@ rebound_dashUI <- function(id) {
   #     step = NA,
   #     width = "300px"
   #   ),
-  #   
+  #
   #   numericInput(
   #     inputId = ns("e_qs_M"),
   #     label = HTML("Income elasticity of energy service consumption [-]:"),
@@ -153,7 +153,7 @@ rebound_dashUI <- function(id) {
   #     step = NA,
   #     width = "300px"
   #   ),
-  #   
+  #
   #   numericInput(
   #     inputId = ns("e_qo_M"),
   #     label = HTML("Income elasticity of other goods consumption [-]:"),
@@ -163,7 +163,7 @@ rebound_dashUI <- function(id) {
   #     step = NA,
   #     width = "300px"
   #   ),
-  #   
+  #
   #   numericInput(
   #     inputId = ns("e_qs_ps_UC"),
   #     label = HTML("Uncompensated Marshallian energy service price elasticity of energy service [-]:"),
@@ -173,13 +173,13 @@ rebound_dashUI <- function(id) {
   #     step = NA,
   #     width = "300px"
   #   ),
-  #   
+  #
   #   tags$hr(),
-  #   
+  #
   #   tags$h4("Original Device"),
-  #   
+  #
   #   tags$hr(),
-  #   
+  #
   #   numericInput(
   #     inputId = ns("eta_engr_units_orig"),
   #     label = HTML("Original energy service efficiency [?]:"),
@@ -189,7 +189,7 @@ rebound_dashUI <- function(id) {
   #     step = NA,
   #     width = "300px"
   #   ),
-  #   
+  #
   #   numericInput(
   #     inputId = ns("t_own_orig"),
   #     label = HTML("Original ownership time [years]:"),
@@ -199,7 +199,7 @@ rebound_dashUI <- function(id) {
   #     step = NA,
   #     width = "300px"
   #   ),
-  #   
+  #
   #   numericInput(
   #     inputId = ns("C_dot_md_orig"),
   #     label = HTML("Original maintenance and disposal expenditure rate [$/year]:"),
@@ -209,7 +209,7 @@ rebound_dashUI <- function(id) {
   #     step = NA,
   #     width = "300px"
   #   ),
-  #   
+  #
   #   numericInput(
   #     inputId = ns("E_emb_orig"),
   #     label = HTML("Original embodied energy [MJ]:"),
@@ -219,7 +219,7 @@ rebound_dashUI <- function(id) {
   #     step = NA,
   #     width = "300px"
   #   ),
-  #   
+  #
   #   numericInput(
   #     inputId = ns("t_life_orig"),
   #     label = HTML("Original lifetime [years]: <br/> "),
@@ -229,7 +229,7 @@ rebound_dashUI <- function(id) {
   #     step = NA,
   #     width = "300px"
   #   ),
-  #   
+  #
   #   numericInput(
   #     inputId = ns("C_cap_orig"),
   #     label = HTML("Original net capital expenditure [$]:"),
@@ -239,7 +239,7 @@ rebound_dashUI <- function(id) {
   #     step = NA,
   #     width = "300px"
   #   ),
-  #   
+  #
   #   numericInput(
   #     inputId = ns("q_dot_s_orig"),
   #     label = HTML("Original energy service consumption rate [?]:"),
@@ -249,7 +249,7 @@ rebound_dashUI <- function(id) {
   #     step = NA,
   #     width = "300px"
   #   ),
-  #   
+  #
   #   numericInput(
   #     inputId = ns("M_dot_orig"),
   #     label = HTML("Original disposable income rate [$/year]:"),
@@ -259,13 +259,13 @@ rebound_dashUI <- function(id) {
   #     step = NA,
   #     width = "300px"
   #   ),
-  #   
+  #
   #   tags$hr(),
-  #   
+  #
   #   tags$h4("Upgraded Device"),
-  #   
+  #
   #   tags$hr(),
-  #   
+  #
   #   numericInput(
   #     inputId = ns("eta_engr_units_star"),
   #     label = HTML("Upgraded energy service efficiency [?]:"),
@@ -275,7 +275,7 @@ rebound_dashUI <- function(id) {
   #     step = NA,
   #     width = "300px"
   #   ),
-  #   
+  #
   #   numericInput(
   #     inputId = ns("t_own_star"),
   #     label = HTML("Upgraded ownership time [years]:"),
@@ -285,7 +285,7 @@ rebound_dashUI <- function(id) {
   #     step = NA,
   #     width = "300px"
   #   ),
-  #   
+  #
   #   numericInput(
   #     inputId = ns("C_dot_md_star"),
   #     label = HTML("Upgraded maintenance and disposal expenditure rate [$/year]:"),
@@ -295,7 +295,7 @@ rebound_dashUI <- function(id) {
   #     step = NA,
   #     width = "300px"
   #   ),
-  #   
+  #
   #   numericInput(
   #     inputId = ns("E_emb_star"),
   #     label = HTML("Upgraded embodied energy [MJ]:"),
@@ -305,7 +305,7 @@ rebound_dashUI <- function(id) {
   #     step = NA,
   #     width = "300px"
   #   ),
-  #   
+  #
   #   numericInput(
   #     inputId = ns("t_life_star"),
   #     label = HTML("Upgraded lifetime [years]:"),
@@ -315,7 +315,7 @@ rebound_dashUI <- function(id) {
   #     step = NA,
   #     width = "300px"
   #   ),
-  #   
+  #
   #   numericInput(
   #     inputId = ns("C_cap_star"),
   #     label = HTML("Upgraded net capital expenditure [$]:"),
@@ -325,7 +325,7 @@ rebound_dashUI <- function(id) {
   #     step = NA,
   #     width = "300px"
   #   )
-  #   
+  #
   # ), # close dropdown
 
 ################################################################################
@@ -342,11 +342,11 @@ rebound_dashUI <- function(id) {
       width = 3,
       # height = 400, # Content overflows, doesn't work!
       style = "overflow-y:scroll; max-height: 900px",
-  
+
       tags$h4("Base Parameters"),
-  
+
       tags$hr(),
-  
+
       selectizeInput(
         inputId = ns("Example"),
         label = "Example Case:",
@@ -356,42 +356,42 @@ rebound_dashUI <- function(id) {
         # width = "300px",
         options = list(dropdownParent = 'body')
       ),
-  
+
       textInput(
         inputId = ns("Case"),
         label = "Case:",
         value = "",
         # width = "300px"
       ),
-  
+
       textInput(
         inputId = ns("Original"),
         label = "Original:",
         value = "",
         # width = "300px"
       ),
-  
+
       textInput(
         inputId = ns("Upgrade"),
         label = "Upgrade:",
         value = "",
         # width = "300px"
       ),
-  
+
       textInput(
         inputId = ns("service_unit"),
         label = "Service Unit:",
         value = "",
         # width = "300px"
       ),
-  
+
       textInput(
         inputId = ns("energy_engr_unit"),
         label = "Energy Unit:",
         value = "",
         # width = "300px"
       ),
-  
+
       numericInput(
         inputId = ns("k"),
         label = HTML("Macro Factor (k) [-]:"),
@@ -401,7 +401,7 @@ rebound_dashUI <- function(id) {
         step = NA,
         # width = "300px"
       ),
-  
+
       numericInput(
         inputId = ns("p_E_engr_units"),
         label = HTML("Price of energy [?]:"),
@@ -411,7 +411,7 @@ rebound_dashUI <- function(id) {
         step = NA,
         # width = "300px"
       ),
-  
+
       numericInput(
         inputId = ns("MJ_energy_engr_unit"),
         label = HTML("MJ/energy_eng_unit:"),
@@ -421,7 +421,7 @@ rebound_dashUI <- function(id) {
         step = NA,
         # width = "300px"
       ),
-  
+
       numericInput(
         inputId = ns("I_E"),
         label = HTML("Economy energy intensity [MJ/$]:"),
@@ -431,7 +431,7 @@ rebound_dashUI <- function(id) {
         step = NA,
         # width = "300px"
       ),
-  
+
       numericInput(
         inputId = ns("e_qs_M"),
         label = HTML("Income elasticity of energy service consumption [-]:"),
@@ -441,7 +441,7 @@ rebound_dashUI <- function(id) {
         step = NA,
         # width = "300px"
       ),
-  
+
       numericInput(
         inputId = ns("e_qo_M"),
         label = HTML("Income elasticity of other goods consumption [-]:"),
@@ -451,7 +451,7 @@ rebound_dashUI <- function(id) {
         step = NA,
         # width = "300px"
       ),
-  
+
       numericInput(
         inputId = ns("e_qs_ps_UC"),
         label = HTML("Uncompensated Marshallian energy service price elasticity of energy service [-]:"),
@@ -461,13 +461,13 @@ rebound_dashUI <- function(id) {
         step = NA,
         # width = "300px"
       ),
-  
+
       tags$hr(),
-  
+
       tags$h4("Original Device"),
-  
+
       tags$hr(),
-  
+
       numericInput(
         inputId = ns("eta_engr_units_orig"),
         label = HTML("Original energy service efficiency [?]:"),
@@ -477,7 +477,7 @@ rebound_dashUI <- function(id) {
         step = NA,
         # width = "300px"
       ),
-  
+
       numericInput(
         inputId = ns("t_own_orig"),
         label = HTML("Original ownership time [years]:"),
@@ -487,7 +487,7 @@ rebound_dashUI <- function(id) {
         step = NA,
         # width = "300px"
       ),
-  
+
       numericInput(
         inputId = ns("C_dot_md_orig"),
         label = HTML("Original maintenance and disposal expenditure rate [$/year]:"),
@@ -497,7 +497,7 @@ rebound_dashUI <- function(id) {
         step = NA,
         # width = "300px"
       ),
-  
+
       numericInput(
         inputId = ns("E_emb_orig"),
         label = HTML("Original embodied energy [MJ]:"),
@@ -507,7 +507,7 @@ rebound_dashUI <- function(id) {
         step = NA,
         # width = "300px"
       ),
-  
+
       numericInput(
         inputId = ns("t_life_orig"),
         label = HTML("Original lifetime [years]: <br/> "),
@@ -517,7 +517,7 @@ rebound_dashUI <- function(id) {
         step = NA,
         # width = "300px"
       ),
-  
+
       numericInput(
         inputId = ns("C_cap_orig"),
         label = HTML("Original net capital expenditure [$]:"),
@@ -527,7 +527,7 @@ rebound_dashUI <- function(id) {
         step = NA,
         # width = "300px"
       ),
-  
+
       numericInput(
         inputId = ns("q_dot_s_orig"),
         label = HTML("Original energy service consumption rate [?]:"),
@@ -537,7 +537,7 @@ rebound_dashUI <- function(id) {
         step = NA,
         # width = "300px"
       ),
-  
+
       numericInput(
         inputId = ns("M_dot_orig"),
         label = HTML("Original disposable income rate [$/year]:"),
@@ -547,13 +547,13 @@ rebound_dashUI <- function(id) {
         step = NA,
         # width = "300px"
       ),
-  
+
       tags$hr(),
-  
+
       tags$h4("Upgraded Device"),
-  
+
       tags$hr(),
-  
+
       numericInput(
         inputId = ns("eta_engr_units_star"),
         label = HTML("Upgraded energy service efficiency [?]:"),
@@ -563,7 +563,7 @@ rebound_dashUI <- function(id) {
         step = NA,
         # width = "300px"
       ),
-  
+
       numericInput(
         inputId = ns("t_own_star"),
         label = HTML("Upgraded ownership time [years]:"),
@@ -573,7 +573,7 @@ rebound_dashUI <- function(id) {
         step = NA,
         # width = "300px"
       ),
-  
+
       numericInput(
         inputId = ns("C_dot_md_star"),
         label = HTML("Upgraded maintenance and disposal expenditure rate [$/year]:"),
@@ -583,7 +583,7 @@ rebound_dashUI <- function(id) {
         step = NA,
         # width = "300px"
       ),
-  
+
       numericInput(
         inputId = ns("E_emb_star"),
         label = HTML("Upgraded embodied energy [MJ]:"),
@@ -593,7 +593,7 @@ rebound_dashUI <- function(id) {
         step = NA,
         # width = "300px"
       ),
-  
+
       numericInput(
         inputId = ns("t_life_star"),
         label = HTML("Upgraded lifetime [years]:"),
@@ -603,7 +603,7 @@ rebound_dashUI <- function(id) {
         step = NA,
         # width = "300px"
       ),
-  
+
       numericInput(
         inputId = ns("C_cap_star"),
         label = HTML("Upgraded net capital expenditure [$]:"),
@@ -613,37 +613,37 @@ rebound_dashUI <- function(id) {
         step = NA,
         # width = "300px"
       )
-  
+
       ), # Close box
-    
-    
-    
+
+
+
 ################################################################################
 # Variables box of width 12 #
-################################################################################ 
-    
+################################################################################
+
     # box(title = "Variables",
     #     id = "Variables_rebound",
     #     # status = "primary",
     #     solidHeader = FALSE,
-    #     closable = FALSE, 
+    #     closable = FALSE,
     #     collapsible = TRUE,
     #     width = 12,
     #     # height = 100,
-    #     
+    #
     #     tags$h4("Base Parameters"),
-    #     
+    #
     #     fluidRow(
     #       column(width = 2,
     #              selectizeInput(inputId = ns("Example"),
     #                             label = "Example Case:",
-    #                             choices = c(Car = "Car", 
+    #                             choices = c(Car = "Car",
     #                                         Lamp = "Lamp",
     #                                         None = "None"),
     #                             width = "230px",
     #                             options = list(dropdownParent = 'body')
     #                             ),
-    #              
+    #
     #              textInput(inputId = ns("Case"),
     #                        label = "Case:",
     #                        value = "",
@@ -655,7 +655,7 @@ rebound_dashUI <- function(id) {
     #                        value = "",
     #                        width = "230px"
     #              ),
-    #              
+    #
     #              textInput(inputId = ns("Upgrade"),
     #                        label = "Upgrade:",
     #                        value = "",
@@ -667,15 +667,15 @@ rebound_dashUI <- function(id) {
     #                        value = "",
     #                        width = "230px"
     #              ),
-    #              
+    #
     #              textInput(inputId = ns("energy_engr_unit"),
     #                        label = "Energy Unit:",
     #                        value = "",
     #                        width = "230px")
     #              ),
-    #       
+    #
     #       column(width = 2,
-    #              
+    #
     #              numericInput(inputId = ns("k"),
     #                           label = HTML("Macro Factor (k) [-]:"),
     #                           value = NA,
@@ -684,7 +684,7 @@ rebound_dashUI <- function(id) {
     #                           step = NA,
     #                           width = "230px"
     #              ),
-    #              
+    #
     #              numericInput(inputId = ns("p_E_engr_units"),
     #                           label = HTML("Price of energy [?]:"),
     #                           value = NA,
@@ -693,7 +693,7 @@ rebound_dashUI <- function(id) {
     #                           step = NA,
     #                           width = "230px")
     #              ),
-    #       
+    #
     #       column(width = 2,
     #              numericInput(inputId = ns("MJ_energy_engr_unit"),
     #                           label = HTML("MJ/energy_eng_unit:"),
@@ -702,7 +702,7 @@ rebound_dashUI <- function(id) {
     #                           max = NA,
     #                           step = NA,
     #                           width = "230px"),
-    #              
+    #
     #              numericInput(inputId = ns("I_E"),
     #                           label = HTML("Economy energy intensity [MJ/$]:"),
     #                           value = NA,
@@ -711,14 +711,14 @@ rebound_dashUI <- function(id) {
     #                           step = NA,
     #                           width = "230px")
     #              )
-    #       
-    #       
+    #
+    #
     #     ), # Closes fluid row for Base Parameters
-    #     
+    #
     #     fluidRow(
     #       column(width = 3,
-    # 
-    #       
+    #
+    #
     #       numericInput(inputId = ns("e_qs_M"),
     #                    label = HTML("Income elasticity of energy service consumption [-]:"),
     #                    value = NA,
@@ -727,11 +727,11 @@ rebound_dashUI <- function(id) {
     #                    step = NA,
     #                    width = "230px"
     #                    )
-    #       
+    #
     #       ),
-    #       
+    #
     #       column(width = 3,
-    #       
+    #
     #       numericInput(inputId = ns("e_qo_M"),
     #                    label = HTML("Income elasticity of other goods consumption [-]:"),
     #                    value = NA,
@@ -741,9 +741,9 @@ rebound_dashUI <- function(id) {
     #                    width = "230px"
     #                    )
     #       ),
-    #       
+    #
     #       column(width = 6,
-    #       
+    #
     #       numericInput(inputId = ns("e_qs_ps_UC"),
     #                    label = HTML("Uncompensated Marshallian energy service price elasticity of energy service [-]:"),
     #                    value = NA,
@@ -753,23 +753,23 @@ rebound_dashUI <- function(id) {
     #                    width = "230px"
     #                    )
     #       )
-    #       
+    #
     #       ),
-    #       
-    # 
-    #     
+    #
+    #
+    #
     #     tags$hr(),
-    #     
+    #
     #     tags$h4("Original device information"),
-    #     
+    #
     #     # ???
     #     splitLayout(
-    #       
+    #
     #       style = "vertical-align: middle;
     #                horizontal-align: left;",
-    #       
+    #
     #       cellArgs = list(style = "padding: 0px"),
-    #       
+    #
     #       numericInput(inputId = ns("eta_engr_units_orig"),
     #                    label = HTML("Original energy service efficiency [?]:"),
     #                    value = NA,
@@ -777,7 +777,7 @@ rebound_dashUI <- function(id) {
     #                    max = NA,
     #                    step = NA,
     #                    width = "150px"),
-    #       
+    #
     #       numericInput(inputId = ns("t_own_orig"),
     #                    label = HTML("Original ownership time [years]:"),
     #                    value = NA,
@@ -785,7 +785,7 @@ rebound_dashUI <- function(id) {
     #                    max = NA,
     #                    step = NA,
     #                    width = "150px"),
-    #       
+    #
     #       numericInput(inputId = ns("C_dot_md_orig"),
     #                    label = HTML("Original maintenance and disposal expenditure rate [$/year]:"),
     #                    value = NA,
@@ -793,7 +793,7 @@ rebound_dashUI <- function(id) {
     #                    max = NA,
     #                    step = NA,
     #                    width = "150px"),
-    #       
+    #
     #       numericInput(inputId = ns("E_emb_orig"),
     #                    label = HTML("Original embodied energy [MJ]:"),
     #                    value = NA,
@@ -801,16 +801,16 @@ rebound_dashUI <- function(id) {
     #                    max = NA,
     #                    step = NA,
     #                    width = "150px")
-    #       
+    #
     #     ), # Closes split layout
-    #     
+    #
     #     splitLayout(
-    #       
+    #
     #       style = "vertical-align: middle;
     #                horizontal-align: left;",
-    #       
+    #
     #       cellArgs = list(style = "padding: 0px"),
-    #       
+    #
     #       numericInput(inputId = ns("t_life_orig"),
     #                    label = HTML("Original lifetime [years]: <br/> "),
     #                    value = NA,
@@ -818,7 +818,7 @@ rebound_dashUI <- function(id) {
     #                    max = NA,
     #                    step = NA,
     #                    width = "150px"),
-    #       
+    #
     #       numericInput(inputId = ns("C_cap_orig"),
     #                    label = HTML("Original net capital expenditure [$]:"),
     #                    value = NA,
@@ -826,7 +826,7 @@ rebound_dashUI <- function(id) {
     #                    max = NA,
     #                    step = NA,
     #                    width = "150px"),
-    #       
+    #
     #       numericInput(inputId = ns("q_dot_s_orig"),
     #                    label = HTML("Original energy service consumption rate [?]:"),
     #                    value = NA,
@@ -834,7 +834,7 @@ rebound_dashUI <- function(id) {
     #                    max = NA,
     #                    step = NA,
     #                    width = "150px"),
-    #       
+    #
     #       numericInput(inputId = ns("M_dot_orig"),
     #                    label = HTML("Original disposable income rate [$/year]:"),
     #                    value = NA,
@@ -842,20 +842,20 @@ rebound_dashUI <- function(id) {
     #                    max = NA,
     #                    step = NA,
     #                    width = "150px")
-    #       
+    #
     #     ), # Closes split layout
-    #     
+    #
     #     tags$hr(),
-    #     
+    #
     #     tags$h4("Upgraded device information"),
-    #     
+    #
     #     splitLayout(
-    #       
+    #
     #       style = "vertical-align: middle;
     #                horizontal-align: left;",
-    #       
+    #
     #       cellArgs = list(style = "padding: 0px"),
-    #       
+    #
     #       numericInput(inputId = ns("eta_engr_units_star"),
     #                    label = HTML("Upgraded energy service efficiency [?]: <br/> "),
     #                    value = NA,
@@ -864,7 +864,7 @@ rebound_dashUI <- function(id) {
     #                    step = NA,
     #                    width = "200px"
     #                    ),
-    #       
+    #
     #       numericInput(inputId = ns("t_own_star"),
     #                    label = HTML("Upgraded ownership time [years]: <br/> "),
     #                    value = NA,
@@ -873,9 +873,9 @@ rebound_dashUI <- function(id) {
     #                    step = NA,
     #                    width = "200px"
     #                    ),
-    #       
+    #
     #       numericInput(inputId = ns("C_dot_md_star"),
-    #                    label = HTML("Upgraded maintenance and disposal <br/> 
+    #                    label = HTML("Upgraded maintenance and disposal <br/>
     #                                 expenditure rate [$/year]:"),
     #                    value = NA,
     #                    min = NA,
@@ -883,7 +883,7 @@ rebound_dashUI <- function(id) {
     #                    step = NA,
     #                    width = "200px"
     #                    ),
-    #       
+    #
     #       numericInput(inputId = ns("E_emb_star"),
     #                    label = HTML("Upgraded embodied energy [MJ]: <br/> "),
     #                    value = NA,
@@ -892,11 +892,11 @@ rebound_dashUI <- function(id) {
     #                    step = NA,
     #                    width = "150px"
     #                    )
-    #       
+    #
     #       ), # Closes split layout
-    #     
+    #
     #     splitLayout(
-    #       
+    #
     #       numericInput(inputId = ns("t_life_star"),
     #                    label = HTML("Upgraded lifetime [years]: <br/> "),
     #                    value = NA,
@@ -905,7 +905,7 @@ rebound_dashUI <- function(id) {
     #                    step = NA,
     #                    width = "150px"
     #       ),
-    #       
+    #
     #       numericInput(inputId = ns("C_cap_star"),
     #                    label = HTML("Upgraded net capital expenditure [$]: <br/> "),
     #                    value = NA,
@@ -915,14 +915,14 @@ rebound_dashUI <- function(id) {
     #                    width = "150px"
     #                    )
     #       ) # Closes split layout
-    #     
+    #
     #     ), # Closes box
-    # 
-    
+    #
+
 ################################################################################
 # Visualisations #
-################################################################################ 
-    
+################################################################################
+
 
     # # Rebound graph - faceted
     # box(
@@ -944,7 +944,7 @@ rebound_dashUI <- function(id) {
     # ),
 
 
-    
+
     # Rebound graph - energy
     box(
       width = 3,
@@ -961,20 +961,20 @@ rebound_dashUI <- function(id) {
       sidebar_background = "#FFFFFF",
       sidebar_title = "Variables",
       sidebar_content = tagList(),
-      
+
       # shinyWidgets::dropdownButton(
-      #   
+      #
       #   # Dropdown button characteristics
       #   circle = FALSE,
       #   size = "sm",
       #   status = "default",
-      #   icon = icon("gear"), 
+      #   icon = icon("gear"),
       #   width = "300px",
       #   inline = FALSE,
-      #   
+      #
       #   tooltip = tooltipOptions(title = "Rebound Parameters"),
-      #   
-      #   
+      #
+      #
       #   # Inputs
       #   selectizeInput(
       #     inputId = ns("Example"),
@@ -985,42 +985,42 @@ rebound_dashUI <- function(id) {
       #     width = "300px",
       #     options = list(dropdownParent = 'body')
       #   ),
-      #   
+      #
       #   textInput(
       #     inputId = ns("Case"),
       #     label = "Case:",
       #     value = "",
       #     width = "300px"
       #   ),
-      #   
+      #
       #   textInput(
       #     inputId = ns("Original"),
       #     label = "Original:",
       #     value = "",
       #     width = "300px"
       #   ),
-      #   
+      #
       #   textInput(
       #     inputId = ns("Upgrade"),
       #     label = "Upgrade:",
       #     value = "",
       #     width = "300px"
       #   ),
-      #   
+      #
       #   textInput(
       #     inputId = ns("service_unit"),
       #     label = "Service Unit:",
       #     value = "",
       #     width = "300px"
       #   ),
-      #   
+      #
       #   textInput(
       #     inputId = ns("energy_engr_unit"),
       #     label = "Energy Unit:",
       #     value = "",
       #     width = "300px"
       #   ),
-      #   
+      #
       #   numericInput(
       #     inputId = ns("k"),
       #     label = HTML("Macro Factor (k) [-]:"),
@@ -1030,7 +1030,7 @@ rebound_dashUI <- function(id) {
       #     step = NA,
       #     width = "300px"
       #   ),
-      #   
+      #
       #   numericInput(
       #     inputId = ns("p_E_engr_units"),
       #     label = HTML("Price of energy [?]:"),
@@ -1040,7 +1040,7 @@ rebound_dashUI <- function(id) {
       #     step = NA,
       #     width = "300px"
       #   ),
-      #   
+      #
       #   numericInput(
       #     inputId = ns("MJ_energy_engr_unit"),
       #     label = HTML("MJ/energy_eng_unit:"),
@@ -1050,7 +1050,7 @@ rebound_dashUI <- function(id) {
       #     step = NA,
       #     width = "300px"
       #   ),
-      #   
+      #
       #   numericInput(
       #     inputId = ns("I_E"),
       #     label = HTML("Economy energy intensity [MJ/$]:"),
@@ -1060,7 +1060,7 @@ rebound_dashUI <- function(id) {
       #     step = NA,
       #     width = "300px"
       #   ),
-      #   
+      #
       #   numericInput(
       #     inputId = ns("e_qs_M"),
       #     label = HTML("Income elasticity of energy service consumption [-]:"),
@@ -1070,7 +1070,7 @@ rebound_dashUI <- function(id) {
       #     step = NA,
       #     width = "300px"
       #   ),
-      #   
+      #
       #   numericInput(
       #     inputId = ns("e_qo_M"),
       #     label = HTML("Income elasticity of other goods consumption [-]:"),
@@ -1080,7 +1080,7 @@ rebound_dashUI <- function(id) {
       #     step = NA,
       #     width = "300px"
       #   ),
-      #   
+      #
       #   numericInput(
       #     inputId = ns("e_qs_ps_UC"),
       #     label = HTML("Uncompensated Marshallian energy service price elasticity of energy service [-]:"),
@@ -1090,13 +1090,13 @@ rebound_dashUI <- function(id) {
       #     step = NA,
       #     width = "300px"
       #   ),
-      #   
+      #
       #   tags$hr(),
-      #   
+      #
       #   tags$h4("Original Device"),
-      #   
+      #
       #   tags$hr(),
-      #   
+      #
       #   numericInput(
       #     inputId = ns("eta_engr_units_orig"),
       #     label = HTML("Original energy service efficiency [?]:"),
@@ -1106,7 +1106,7 @@ rebound_dashUI <- function(id) {
       #     step = NA,
       #     width = "300px"
       #   ),
-      #   
+      #
       #   numericInput(
       #     inputId = ns("t_own_orig"),
       #     label = HTML("Original ownership time [years]:"),
@@ -1116,7 +1116,7 @@ rebound_dashUI <- function(id) {
       #     step = NA,
       #     width = "300px"
       #   ),
-      #   
+      #
       #   numericInput(
       #     inputId = ns("C_dot_md_orig"),
       #     label = HTML("Original maintenance and disposal expenditure rate [$/year]:"),
@@ -1126,7 +1126,7 @@ rebound_dashUI <- function(id) {
       #     step = NA,
       #     width = "300px"
       #   ),
-      #   
+      #
       #   numericInput(
       #     inputId = ns("E_emb_orig"),
       #     label = HTML("Original embodied energy [MJ]:"),
@@ -1136,7 +1136,7 @@ rebound_dashUI <- function(id) {
       #     step = NA,
       #     width = "300px"
       #   ),
-      #   
+      #
       #   numericInput(
       #     inputId = ns("t_life_orig"),
       #     label = HTML("Original lifetime [years]: <br/> "),
@@ -1146,7 +1146,7 @@ rebound_dashUI <- function(id) {
       #     step = NA,
       #     width = "300px"
       #   ),
-      #   
+      #
       #   numericInput(
       #     inputId = ns("C_cap_orig"),
       #     label = HTML("Original net capital expenditure [$]:"),
@@ -1156,7 +1156,7 @@ rebound_dashUI <- function(id) {
       #     step = NA,
       #     width = "300px"
       #   ),
-      #   
+      #
       #   numericInput(
       #     inputId = ns("q_dot_s_orig"),
       #     label = HTML("Original energy service consumption rate [?]:"),
@@ -1166,7 +1166,7 @@ rebound_dashUI <- function(id) {
       #     step = NA,
       #     width = "300px"
       #   ),
-      #   
+      #
       #   numericInput(
       #     inputId = ns("M_dot_orig"),
       #     label = HTML("Original disposable income rate [$/year]:"),
@@ -1176,13 +1176,13 @@ rebound_dashUI <- function(id) {
       #     step = NA,
       #     width = "300px"
       #   ),
-      #   
+      #
       #   tags$hr(),
-      #   
+      #
       #   tags$h4("Upgraded Device"),
-      #   
+      #
       #   tags$hr(),
-      #   
+      #
       #   numericInput(
       #     inputId = ns("eta_engr_units_star"),
       #     label = HTML("Upgraded energy service efficiency [?]:"),
@@ -1192,7 +1192,7 @@ rebound_dashUI <- function(id) {
       #     step = NA,
       #     width = "300px"
       #   ),
-      #   
+      #
       #   numericInput(
       #     inputId = ns("t_own_star"),
       #     label = HTML("Upgraded ownership time [years]:"),
@@ -1202,7 +1202,7 @@ rebound_dashUI <- function(id) {
       #     step = NA,
       #     width = "300px"
       #   ),
-      #   
+      #
       #   numericInput(
       #     inputId = ns("C_dot_md_star"),
       #     label = HTML("Upgraded maintenance and disposal expenditure rate [$/year]:"),
@@ -1212,7 +1212,7 @@ rebound_dashUI <- function(id) {
       #     step = NA,
       #     width = "300px"
       #   ),
-      #   
+      #
       #   numericInput(
       #     inputId = ns("E_emb_star"),
       #     label = HTML("Upgraded embodied energy [MJ]:"),
@@ -1222,7 +1222,7 @@ rebound_dashUI <- function(id) {
       #     step = NA,
       #     width = "300px"
       #   ),
-      #   
+      #
       #   numericInput(
       #     inputId = ns("t_life_star"),
       #     label = HTML("Upgraded lifetime [years]:"),
@@ -1232,7 +1232,7 @@ rebound_dashUI <- function(id) {
       #     step = NA,
       #     width = "300px"
       #   ),
-      #   
+      #
       #   numericInput(
       #     inputId = ns("C_cap_star"),
       #     label = HTML("Upgraded net capital expenditure [$]:"),
@@ -1242,9 +1242,9 @@ rebound_dashUI <- function(id) {
       #     step = NA,
       #     width = "300px"
       #   )
-      #   
+      #
       # ), # close dropdown
-      
+
       plotOutput(outputId = ns("rebound_graph_energy_i"))
     ), # Close box
 
@@ -1271,7 +1271,7 @@ rebound_dashUI <- function(id) {
     box(
       width = 3,
       # height = 450,
-      title = "Preferences",
+      title = "Consumption",
       id = "rebound_graphbox_preferences_i",
       closable = FALSE,
       # status = "warning",
@@ -1315,14 +1315,14 @@ rebound_dashUI <- function(id) {
     ),
 
 
-    
+
     )
-  
+
 } # Close UI module
 
 # Establishes the server module function
 rebound_dash <- function(input, output, session,
-                         
+
                          Example,
                          Case,
                          Original,
@@ -1350,28 +1350,28 @@ rebound_dash <- function(input, output, session,
                          t_life_orig,
                          E_emb_star,
                          t_life_star
-                         
+
                          ) {
-  
+
 ################################################################################
 # Add tour #
-################################################################################ 
+################################################################################
 
-  
+
 ################################################################################
 # Update Events #
-################################################################################ 
+################################################################################
 
-  
+
 ################################################################################
 # Adds Examples #
-################################################################################  
-  
+################################################################################
+
   observeEvent(input$Example,  {
     req(input$Example)
-    
+
     if (input$Example == "Car") {
-      
+
       Case_example <- c("Car")
       Original_example <- c("Ford Fusion")
       Upgrade_example <- c("Ford Fusion Hybrid")
@@ -1398,11 +1398,11 @@ rebound_dash <- function(input, output, session,
       t_life_orig_example <- 14
       E_emb_star_example <- 40000
       t_life_star_example <- 14
-      
+
     }
-    
+
     if (input$Example == "Lamp") {
-      
+
       Case_example <- c("Lamp")
       Original_example <- c("Incandescent")
       Upgrade_example <- c("LED")
@@ -1430,11 +1430,11 @@ rebound_dash <- function(input, output, session,
       E_emb_star_example <- 6.5
       t_life_star_example <- 10
 
-      
+
     }
-    
+
     if (input$Example == "None") {
-      
+
       Case_example <- c("")
       Original_example <- c("")
       Upgrade_example <- c("")
@@ -1462,121 +1462,121 @@ rebound_dash <- function(input, output, session,
       E_emb_star_example <- NA
       t_life_star_example <- NA
     }
-    
-    
+
+
     # Update input values based on examples
     updateTextInput(session,
                     inputId = "Case",
                     value = Case_example)
-    
+
     updateTextInput(session,
-                    inputId = "Original", 
+                    inputId = "Original",
                     value = Original_example)
-    
+
     updateTextInput(session,
-                    inputId = "Upgrade", 
+                    inputId = "Upgrade",
                     value = Upgrade_example)
-    
+
     updateTextInput(session,
-                    inputId = "service_unit", 
+                    inputId = "service_unit",
                     value = service_unit_example)
-    
+
     updateTextInput(session,
-                    inputId = "energy_engr_unit", 
+                    inputId = "energy_engr_unit",
                     value = energy_engr_unit_example)
-    
+
     updateNumericInput(session,
-                       inputId = "MJ_energy_engr_unit", 
+                       inputId = "MJ_energy_engr_unit",
                        value = MJ_energy_engr_unit_example)
-    
+
     updateNumericInput(session,
                        inputId = "I_E",
                        value = I_E_example)
-    
+
     updateNumericInput(session,
                        inputId = "k",
                        value = k_example)
-    
+
     updateNumericInput(session,
                        inputId = "p_E_engr_units",
                        value = p_E_engr_units_example)
-    
+
     updateNumericInput(session,
                        inputId = "e_qs_ps_UC",
                        value = e_qs_ps_UC_example)
-    
+
     updateNumericInput(session,
                        inputId = "e_qs_M",
                        value = e_qs_M_example)
-    
+
     updateNumericInput(session,
                        inputId = "e_qo_M",
                        value = e_qo_M_example)
-    
+
     updateNumericInput(session,
                        inputId = "eta_engr_units_orig",
                        value = eta_engr_units_orig_example)
-    
+
     updateNumericInput(session,
                        inputId = "eta_engr_units_star",
                        value = eta_engr_units_star_example)
-    
+
     updateNumericInput(session,
                        inputId = "q_dot_s_orig",
                        value = q_dot_s_orig_example)
-    
+
     updateNumericInput(session,
                        inputId = "M_dot_orig",
                        value = M_dot_orig_example)
-    
+
     updateNumericInput(session,
                        inputId = "C_cap_orig",
                        value = C_cap_orig_example)
-    
+
     updateNumericInput(session,
                        inputId = "t_own_orig",
                        value = t_own_orig_example)
-    
+
     updateNumericInput(session,
                        inputId = "C_cap_star",
                        value = C_cap_star_example)
-    
+
     updateNumericInput(session,
                        inputId = "t_own_star",
                        value = t_own_star_example)
-    
+
     updateNumericInput(session,
                        inputId = "C_dot_md_orig",
                        value = C_dot_md_orig_example)
-    
+
     updateNumericInput(session,
                        inputId = "C_dot_md_star",
                        value =  C_dot_md_star_example)
-    
+
     updateNumericInput(session,
                        inputId = "E_emb_orig",
                        value = E_emb_orig_example)
-    
+
     updateNumericInput(session,
                        inputId = "t_life_orig",
                        value = t_life_orig_example)
-    
+
     updateNumericInput(session,
                        inputId = "E_emb_star",
                        value = E_emb_star_example)
-    
+
     updateNumericInput(session,
                        inputId = "t_life_star",
                        value = t_life_star_example)
-    
+
   })
 
-  
+
 ################################################################################
 # Select Data #
-################################################################################   
+################################################################################
 
-  
+
   eeu_data_empty <- tibble::tibble(
     Case = as.character(),
     Original = as.character(),
@@ -1604,10 +1604,10 @@ rebound_dash <- function(input, output, session,
     t_life_orig = as.double(),
     E_emb_star = as.double(),
     t_life_star = as.double())
-  
-  
+
+
   eeu_data_full <- reactive({
-  
+
     # Data entered by user
     # input$Case, # exclude Case if not nullifying in mutate below
     eeu_data_empty %>%
@@ -1639,45 +1639,45 @@ rebound_dash <- function(input, output, session,
         E_emb_star = input$E_emb_star,
         t_life_star = input$t_life_star
       ) %>%
-      
+
       ReboundTools::rebound_analysis()
-    
+
   })
-  
-  
+
+
 ################################################################################
 # Outputs #
 ################################################################################
-  
+
   ## Graphs
-  
+
   # # Plots Rebound plotly graph - Faceted plots
   # output$rebound_graph_plotly <- renderPlotly({
-  # 
-  # 
-  # 
+  #
+  #
+  #
   #   rebound_graph <- eeu_data_full() %>%
-  # 
+  #
   #     dplyr::mutate(Reference = "Placeholder", .before = "Case") %>%
-  # 
+  #
   #     ReboundTools::path_graphs(indexed = TRUE,
   #                               cases = input$Case#,
   #                               # grid_types = NULL
   #                               ) +
-  #     
+  #
   #     ggplot2::facet_wrap(facets = ReboundTools::graph_df_colnames$graph_type_col) +
   #     ggplot2::xlim(0.5, 1.2) +
   #     ggplot2::ylim(0.99, 1.08) +
   #     ggplot2::theme_classic()
-  # 
-  # 
+  #
+  #
   #   rebound_graph_plotly <- rebound_graph %>% plotly::ggplotly()
-  # 
+  #
   #   return(rebound_graph_plotly)
-  # 
+  #
   # })
 
-  
+
   # Plots Rebound plotly graph - Energy indexed
   output$rebound_graph_energy_i <- renderPlot({
 
@@ -1690,7 +1690,7 @@ rebound_dash <- function(input, output, session,
                                 graph_types =  ReboundTools::graph_types$energy,
                                 cases = input$Case) +
       ggplot2::theme_classic()
-    
+
     return(rebound_graph)
 
 
@@ -1700,7 +1700,7 @@ rebound_dash <- function(input, output, session,
     #                  legend = list(orientation = "h",   # show entries horizontally
     #                                xanchor = "center",  # use center of legend as anchor
     #                                x = 0.5))             # put legend in center of x-axis
-    # 
+    #
     # return(rebound_graph_plotly)
 
   })
@@ -1718,7 +1718,7 @@ rebound_dash <- function(input, output, session,
                                 graph_types = ReboundTools::graph_types$expenditure,
                                 cases = input$Case) +
       ggplot2::theme_classic()
-    
+
     return(rebound_graph)
 
 
@@ -1727,7 +1727,7 @@ rebound_dash <- function(input, output, session,
     #   plotly::layout(legend = list(orientation = "h",   # show entries horizontally
     #                                xanchor = "center",  # use center of legend as anchor
     #                                x = 0.5))             # put legend in center of x-axis
-    # 
+    #
     # return(rebound_graph_plotly)
 
   })
@@ -1742,10 +1742,10 @@ rebound_dash <- function(input, output, session,
 
       ReboundTools::path_graphs(indexed = TRUE,
                                 # grid_types = NULL,
-                                graph_types = ReboundTools::graph_types$preferences,
+                                graph_types = ReboundTools::graph_types$consumption,
                                 cases = input$Case) +
       ggplot2::theme_classic()
-    
+
     return(rebound_graph)
 
 
@@ -1754,18 +1754,18 @@ rebound_dash <- function(input, output, session,
     #   plotly::layout(legend = list(orientation = "h",   # show entries horizontally
     #                                xanchor = "center",  # use center of legend as anchor
     #                                x = 0.5))             # put legend in center of x-axis
-    # 
+    #
     # return(rebound_graph_plotly)
 
   })
 
-  
-  
+
+
   ## Tables
-  
+
   # Creates rebound results table
   output$results_table <- renderTable({
-    
+
     rebound_results_table_data <- eeu_data_full() %>%
       dplyr::mutate(
         Case = NULL
@@ -1776,9 +1776,9 @@ rebound_dash <- function(input, output, session,
                                           digits = 1,
                                           align = "rrr") %>%
       as.data.frame() %>%
-      
+
       # Totals only
-      
+
       dplyr::mutate(`Rebound effect` = list("Direct emplacement",
                                             "Indirect embodied energy",
                                             "Indirect capital expenditure",
@@ -1792,10 +1792,10 @@ rebound_dash <- function(input, output, session,
                                             ), .before = "Rebound term") %>%
       dplyr::select(-`Rebound term`) %>%
       magrittr::set_colnames(c("Rebound effect", "Value [%]"))
-    
-    
+
+
       # Totals and sub-totals
-      
+
       # dplyr::mutate(`Rebound effect` = list("Direct emplacement",
       #                                       "Indirect embodied energy",
       #                                       "Indirect capital expenditure",
@@ -1812,15 +1812,15 @@ rebound_dash <- function(input, output, session,
       #                                       "Sum of indirect",
       #                                       "Total"
       #                                       ), .before = "Rebound term")
-      
+
     return(rebound_results_table_data)
-    
-  
+
+
   })
-  
+
   # Creates rebound stages table
   output$stages_table <- renderTable({
-    
+
     digs <- matrix(c(rep(1, 7),  # eta_engr_units
                      rep(3, 7),  # eta
                      rep(3, 7),  # p_s
@@ -1844,13 +1844,13 @@ rebound_dash <- function(input, output, session,
                                  # latex_vars = NULL
                                  ) %>%
       as.data.frame() %>%
-      
+
       magrittr::set_colnames(c("Units", "Circle", "Star", "Hat", "Bar", "Tilde")) %>%
-      
+
       dplyr::mutate(Units = stringr::str_replace_all(Units, "\\$(.*?)\\$\\s", "")) %>%
-      
+
       dplyr::mutate(Units = stringr::str_remove(Units, "\\\\")) %>%
-      
+
       dplyr::mutate(`Key analysis variables` = list("Efficiency (eta_engr_units)",
                                             "Efficiency (eta)",
                                             "Energy service price (p_s)",
@@ -1864,14 +1864,14 @@ rebound_dash <- function(input, output, session,
                                             "Freed cash rate (N_dot)",
                                             "Disposable income rate (M_dot)"
       ), .before = "Units")
-    
-    
+
+
     return(rebound_stages_table_data)
-    
+
 
   })
-  
+
 } # Close server module
-  
+
 
 
