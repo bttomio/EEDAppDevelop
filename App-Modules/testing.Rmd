@@ -1,0 +1,284 @@
+---
+title: "Testing"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## PFU Database app testing
+
+## Establish path to drake_cache
+
+```{r cache_path, echo = FALSE}
+# Set up the root directory
+root <- rprojroot::is_rstudio_project
+
+# Identifies the file path for the drake cache
+cache_path <- root$find_file(".drake")
+```
+
+
+## Loads data
+
+```{r load_data, echo = FALSE}
+
+# Creates a dataframe containing GDP (constant 2010 US$)
+gdp <- wbstats::wb_data("NY.GDP.MKTP.KD") %>%
+  dplyr::select(2,4,5) %>%
+  magrittr::set_colnames(c("Country", "Year", "GDP"))
+
+# Reads PSUT_useful target, also contains PSUT_final data
+PSUT_useful_data <- drake::readd(SEAPSUTWorkflow::target_names$PSUT_useful, 
+                                path = cache_path, 
+                                character_only = TRUE)
+
+# Adds column of fd_sectors for use in calculating final demand
+PSUT_useful_data <- PSUT_useful_data %>%
+  dplyr::mutate(fd_sectors = matsbyname::getcolnames_byname(PSUT_useful_data$Y))
+
+# Calculates final demand of final and useful energy
+PSUT_useful_data <-  Recca::finaldemand_aggregates(.sutdata = PSUT_useful_data,
+                                                   fd_sectors = "fd_sectors")
+#
+final_demand <- PSUT_useful_data %>%
+  dplyr::select("Country", "Method", "Energy.type", "Last.stage", "Year", "EX_fd_net.ktoe", "EX_fd_gross.ktoe") %>%
+  replace(.=="NULL", NA) %>%
+  tidyr::pivot_longer(cols = EX_fd_net.ktoe:EX_fd_gross.ktoe,
+                      names_to = "fd_metric",
+                      values_to = "Final.demand") %>%
+  tibble::as_tibble()
+
+#
+final_demand$Final.demand <- as.double(final_demand$Final.demand)
+
+#
+final_demand_w_gdp <- final_demand %>%
+  dplyr::left_join(gdp, by = c("Country", "Year"))
+
+#
+indexes <- final_demand_w_gdp %>%
+  dplyr::filter(Year == min(Year)) %>%
+  dplyr::select(-Year) %>% # join by year too?
+  magrittr::set_colnames(c("Country", "Method", "Energy.type", "Last.stage", "fd_metric", "Final.demand.index", "GDP.index"))
+
+#
+final_demand_w_gdp <- final_demand_w_gdp %>%
+  dplyr::left_join(indexes, by = c("Country", "Method", "Energy.type", "Last.stage", "fd_metric")) %>%
+  dplyr::mutate("Final.demand.i" = Final.demand / Final.demand.index) %>%
+  dplyr::mutate("GDP.i" = GDP / GDP.index)
+
+#
+final_demand_w_gdp <- final_demand_w_gdp %>%
+  dplyr::group_by(Country, Method, Energy.type, Last.stage, fd_metric) %>%
+  dplyr::mutate(
+                # Difference in time (just in case there are gaps)
+                Diff_year = Year - dplyr::lag(Year),
+
+                # # Difference in GDP between years
+                # Diff_gdp = GDP - lag(GDP),
+                # 
+                # # Growth rate of GDP for given year
+                # Rate_gdp = ((Diff_gdp / Diff_year) / GDP),
+                # 
+                # # Difference in fd between years
+                # Diff_fd = Final.demand - lag(Final.demand),
+                # 
+                # # Growth rate of fd for given year
+                # Rate_fd = ((Diff_fd / Diff_year) / Final.demand),
+                
+                CAAGR_gdp = (((GDP / dplyr::lag(GDP))^(1/Diff_year)) - 1),
+                
+                CAAGR_fd = (((Final.demand / dplyr::lag(Final.demand))^(1/Diff_year)) - 1)
+                
+                ) %>%
+  
+  dplyr::select(-Diff_year) %>%
+  
+  dplyr::ungroup()
+
+```
+
+
+
+## Testing animation of energy-gdp coupling space
+
+
+```{r animate test, echo = FALSE}
+
+
+foo <- final_demand_w_gdp %>%
+  dplyr::filter(Country == "GBR", 
+                Method == "PCM", 
+                Energy.type == "E", 
+                Last.stage == "Final", 
+                fd_metric == "EX_fd_gross.ktoe") %>%
+  na.omit()
+
+CoupledLine <- data.frame(x = 0, y = 0, xend = 0.1, yend = 0.1)
+DecoupledLine <- data.frame(x = 0, y = 0, xend = 0.1, yend = 0)
+
+
+ggplot2::ggplot(data = foo) +
+geom_point(mapping = aes(x = CAAGR_gdp, y = CAAGR_fd)) +
+
+geom_path(mapping = aes(x = CAAGR_gdp, y = CAAGR_fd, colour = Year)) +
+
+geom_abline(slope = 1, intercept = 0, colour = "black") +
+# scale_y_continuous(limits = c(-0.01, 0.12), breaks = seq(0, 0.12, by = 0.02)) +
+
+geom_segment(data = CoupledLine,
+             mapping = aes(x = x, y = y, xend = xend, yend = yend),
+             colour = "black") +
+
+geom_segment(data = DecoupledLine,
+             mapping = aes(x = x, y = y, xend = xend, yend = yend),
+             colour = "black") +
+
+# Text annotations for coupling
+annotate(geom = "text", x = 0.055, y = 0.075,
+         label = "Hypercoupling", size = 4, angle = 35) +
+annotate(geom = "text", x = 0.085, y = 0.07,
+         label = "Coupled", size = 4, angle = 35) +
+annotate(geom = "text", x = 0.075, y = 0.04,
+         label = "Relative decoupling", size = 4, angle = 25) +
+annotate(geom = "text", x = 0.075, y = 0.005,
+         label = "Decoupled", size = 4) +
+annotate(geom = "text", x = 0.075, y = -0.01,
+         label = "Absolute decoupling", size = 4) +
+
+scale_color_gradientn(colors = c("#F0E442", "#D55E00", "#999999")) +
+
+gganimate::transition_reveal(Year) 
+  # labs(title = "Year: {frame_reveal}")
+
+```
+
+``` {r desouplingspace_plotly_test, echo = FALSE}
+
+# https://github.com/ropensci/plotly/issues/957
+# https://plotly.com/ggplot2/cumulative-animations/
+
+accumulate_by <- function(dat, var) {
+  var <- lazyeval::f_eval(var, dat)
+  lvls <- plotly:::getLevels(var)
+  dats <- lapply(seq_along(lvls), function(x) {
+    cbind(dat[var %in% lvls[seq(1, x)], ], frame = lvls[[x]])
+  })
+  dplyr::bind_rows(dats)
+}
+
+foo <- final_demand_w_gdp %>%
+  dplyr::filter(Country == "GBR", 
+                Method == "PCM", 
+                Energy.type == "E", 
+                Last.stage == "Final", 
+                fd_metric == "EX_fd_gross.ktoe") %>%
+  na.omit()
+
+goo <- foo %>%
+  accumulate_by(~Year)
+
+p <- ggplot2::ggplot(data = goo[order(goo$Year),], mapping = aes(x = CAAGR_gdp, y = CAAGR_fd)) +
+          
+        # ggplot2::geom_line(mapping = aes(x = CAAGR_gdp, y = CAAGR_fd, frame = Year)) +
+        
+        ggplot2::geom_point(mapping = aes(colour = Year, frame = frame)) +
+  
+        ggplot2::geom_point(mapping = aes(colour = Year, frame = Year)) +
+  
+        ggplot2::geom_path(size = 0.25,
+                           colour = "grey", 
+                           frame = frame) +
+        
+        # ggplot2::geom_path(mapping = aes(x = CAAGR_gdp, y = CAAGR_fd, colour = Year, frame = Year)) +
+        
+        ggplot2::geom_abline(slope = 1, intercept = 0, colour = "black") +
+      
+        geom_hline(data = data.frame(type="A", y=0), mapping=aes(yintercept = y)) +
+      
+        geom_vline(data = data.frame(type="A", x=0), mapping=aes(xintercept = x)) +
+      
+        # scale_y_continuous(limits = c(-0.01, 0.12), breaks = seq(0, 0.12, by = 0.02)) +
+        
+        ggplot2::geom_segment(data = data.frame(x = 0, y = 0, xend = 0.1, yend = 0.1),
+                              mapping = aes(x = x, y = y, xend = xend, yend = yend),
+                              colour = "black") +
+        
+        ggplot2::geom_segment(data = data.frame(x = 0, y = 0, xend = 0.1, yend = 0),
+                              mapping = aes(x = x, y = y, xend = xend, yend = yend),
+                              colour = "black") +
+        
+        # Text annotations for coupling
+        ggplot2::annotate(geom = "text", x = 0.055, y = 0.075,
+                          label = "Hypercoupling", size = 4, angle = 35) +
+        
+        ggplot2::annotate(geom = "text", x = 0.085, y = 0.07,
+                          label = "Coupled", size = 4, angle = 35) +
+        
+        ggplot2::annotate(geom = "text", x = 0.075, y = 0.04,
+                          label = "Relative decoupling", size = 4, angle = 25) +
+        
+        ggplot2::annotate(geom = "text", x = 0.075, y = 0.005,
+                          label = "Decoupled", size = 4) +
+        
+        ggplot2::annotate(geom = "text", x = 0.075, y = -0.01,
+                          label = "Absolute decoupling", size = 4) +
+        
+        ggplot2::scale_color_gradientn(colors = c("#F0E442", "#D55E00", "#999999")) + 
+        
+        ggplot2::xlab("GDP CAAGR [1/year]") +
+        
+        ggplot2::ylab("Final demand CAAGR [1/year]") +
+        
+        ggplot2::facet_wrap(facets = "Country", ncol = 2) +
+        
+        MKHthemes::xy_theme()
+    
+      
+    p_plotly <- plotly::ggplotly(p, height = 700) %>%
+      animation_opts(1000, 
+                     redraw = FALSE,
+                     easing = "linear",
+                     # ordering = "traces first"
+                     )
+    
+    p_plotly
+
+
+```
+
+
+
+
+
+
+``` {r decoupling_space_annotations, echo = FALSE}
+
+# Dependent on desouplingspace_plotly_test chunk above
+annotations <- p_plotly[['x']][['layout']][['annotations']]
+
+annotations_1 <- annotations[[1]]
+
+annotations_1_y <- annotations[[1]][['y']]
+```
+
+
+``` {r ecc_test, echo = FALSE}
+
+ECC_data <- PSUT_useful_data %>%
+  dplyr::filter(Country == "PRT",
+                Year == "1960")
+
+ECC_test <- ECC_data %>%
+      Recca::make_sankey(fontSize = 15,
+                         nodeWidth = 30) %>%
+      magrittr::extract2("Sankey") %>%
+      magrittr::extract2(2)
+
+ECC_test
+
+
+
+```
