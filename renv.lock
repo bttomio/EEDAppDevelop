@@ -65,6 +65,18 @@
       "Repository": "CRAN",
       "Hash": "366a8838782928e398b8762c932a42a3"
     },
+    "PFUSetup": {
+      "Package": "PFUSetup",
+      "Version": "0.1.4",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "PFUSetup",
+      "RemoteUsername": "EnergyEconomyDecoupling",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "33ac350d6564f4b29ac7bd30cd5a8c56a26b5491",
+      "Hash": "0e40df5071257d085c926879d747bca5"
+    },
     "R6": {
       "Package": "R6",
       "Version": "2.5.0",
@@ -361,10 +373,10 @@
     },
     "ellipsis": {
       "Package": "ellipsis",
-      "Version": "0.3.1",
+      "Version": "0.3.2",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "fd2844b3a43ae2d27e70ece2df1b4e2a"
+      "Hash": "bb0eec2fe32e88d9e2836c2f73ea2077"
     },
     "evaluate": {
       "Package": "evaluate",
@@ -977,10 +989,10 @@
     },
     "rlang": {
       "Package": "rlang",
-      "Version": "0.4.10",
+      "Version": "0.4.11",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "599df23c40a4fce9c7b4764f28c37857"
+      "Hash": "515f341d3affe0de9e4a7f762efb0456"
     },
     "rmarkdown": {
       "Package": "rmarkdown",
@@ -1222,10 +1234,10 @@
     },
     "withr": {
       "Package": "withr",
-      "Version": "2.4.1",
+      "Version": "2.4.2",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "caf4781c674ffa549a4676d2d77b13cc"
+      "Hash": "ad03909b44677f930fa156d47d7a3aeb"
     },
     "xfun": {
       "Package": "xfun",
