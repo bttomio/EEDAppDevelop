@@ -161,8 +161,6 @@ ui = dashboardPage(
 
                          menuItem("Final-to-useful Efficiencies", tabName = "eta_phi", icon = icon("chart-line")),
 
-                         menuItem("Decomposition Analysis", tabName = "lmdi", icon = icon("search")),
-
                          menuItem("Database documentation", tabName = "documentation", icon = icon("book")),
 
                          menuItem("Citation", tabName = "citation_pfu", icon = icon("user-graduate"))
