@@ -17,6 +17,7 @@ library(rmarkdown)
 library(drake)
 library(tidyverse)
 library(zoo)
+library(DT)
 
 # Load specific visualisation packages
 library(networkD3)
@@ -65,6 +66,8 @@ source("App-Modules/sum_dash_ee.R", local = TRUE)
 # Load Rebound modules
 source("App-Modules/intro_rebound.R", local = TRUE)
 source("App-Modules/sum_dash_rebound.R", local = TRUE)
+source("App-Modules/reboundtools_rebound.R", local = TRUE)
+source("App-Modules/citation_rebound.R", local = TRUE)
 
 # Loads bespoke functions for use in the app
 source("App-Modules/functions.R", local = TRUE)
@@ -160,8 +163,6 @@ ui = dashboardPage(
 
                          menuItem("Final-to-useful Efficiencies", tabName = "eta_phi", icon = icon("chart-line")),
 
-                         menuItem("Decomposition Analysis", tabName = "lmdi", icon = icon("search")),
-
                          menuItem("Database documentation", tabName = "documentation", icon = icon("book")),
 
                          menuItem("Citation", tabName = "citation_pfu", icon = icon("user-graduate"))
@@ -185,13 +186,15 @@ ui = dashboardPage(
 
                          ),
 
-                menuItem("Rebound", expandedName = "rebound", icon = icon("compress-alt"),
+                menuItem("Rebound", expandedName = "rebound", icon = icon("compress-alt fa-fw"),
 
-                         menuItem("Introduction", tabName = "intro_rebound", icon = icon("book-reader")),
+                         menuItem("Introduction", tabName = "intro_rebound", icon = icon("book-reader fa-fw")),
 
-                         menuItem("Rebound Dashboard", tabName = "dashboard_rebound", icon = icon("dashboard")),
+                         menuItem("Rebound Dashboard", tabName = "dashboard_rebound", icon = icon("dashboard fa-fw")),
 
-                         menuItem("Citation", tabName = "citation_rebound", icon = icon("user-graduate"))
+                         menuItem("ReboundTools", tabName = "rebound_tools", icon = icon("r-project")),
+
+                         menuItem("Citation", tabName = "citation_rebound", icon = icon("user-graduate fa-fw"))
 
                          ),
 
@@ -278,6 +281,12 @@ ui = dashboardPage(
 
       tabItem(tabName = "dashboard_rebound",
               rebound_dashUI(id = "dash3")),
+
+      tabItem(tabName = "rebound_tools",
+              rebound_docUI(id = "doc2")),
+
+      tabItem(tabName = "citation_rebound",
+              citation_reboundUI(id = "cit2")),
 
 
 

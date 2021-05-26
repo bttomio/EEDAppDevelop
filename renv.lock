@@ -42,6 +42,13 @@
       "Repository": "CRAN",
       "Hash": "5773b85cf6e4b746308c69efea21b037"
     },
+    "DT": {
+      "Package": "DT",
+      "Version": "0.18",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "a7d6660c869d4f41f856504828af4645"
+    },
     "Formula": {
       "Package": "Formula",
       "Version": "1.2-4",
@@ -538,6 +545,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "38ec653c2613bed60052ba3787bd8a2c"
+    },
+    "fontawesome": {
+      "Package": "fontawesome",
+      "Version": "0.2.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "c3910e7cc0ead78538b569d4552c1d16"
     },
     "forcats": {
       "Package": "forcats",

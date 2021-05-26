@@ -20,14 +20,9 @@ intro_pfuUI <- function(id) {
                                       background-color: #FFFFFF;
                                       color: #000000;"),
               tags$hr(),
-              tags$p("This database serves to extend the the International 
+              tags$p("This database serves to extend the the International
                       Energy Agencies (IEA) World extended energy balance data
                       from the Final energy stage, to the Useful energy stage")
-              ),
-          box(title = "Summary Statistics",
-              width = 6
-              # insert DT output here
-            
-          )
+              )
         )
         }
