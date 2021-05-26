@@ -17,6 +17,7 @@ library(rmarkdown)
 library(drake)
 library(tidyverse)
 library(zoo)
+library(DT)
 
 # Load specific visualisation packages
 library(networkD3)
