@@ -218,6 +218,13 @@ ui = dashboardPage(
     #            zoom: 90%; /* Webkit browsers */
     #            }"),
 
+    # Use katex
+    tags$head(
+      tags$link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css", integrity="sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH", crossorigin="anonymous"),
+      tags$script(src="https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.js", integrity="sha384-U8Vrjwb8fuHMt6ewaCy8uqeUXv4oitYACKdB0VziCerzt011iQ/0TqlSlv8MReCm", crossorigin="anonymous"),
+      tags$script(HTML(render_katex))
+    ),
+
     # Load custom theme from customTheme.R script
     customTheme,
 
