@@ -114,7 +114,7 @@ allocplots <- function(input, output, session,
         MKHthemes::xy_theme()
 
 
-      p_plotly <- plotly::ggplotly(p, height = 880) %>%
+      p_plotly <- plotly::ggplotly(p, height = 850) %>%
         plotly::layout(showlegend = TRUE,
                        legend = list(font = list(size = 12))) %>%
         move_annotations(x = -0.05, y = 0.97, mar = 80)
@@ -131,25 +131,31 @@ allocplots <- function(input, output, session,
       as.data.frame()
 
     #div(
-      DT::datatable(data = data,
-                      fillContainer = TRUE,
-                      # height = 880,
-                      options = list(paging = FALSE,    ## paginate the output
-                                     # pageLength = 20,  ## number of rows to output for each page
-                                     scrollX = TRUE,   ## enable scrolling on X axis
-                                     scrollY = "820px",   ## enable scrolling on Y axis
-                                     autoWidth = TRUE, ## use smart column width handling
-                                     server = FALSE,   ## use client-side processing
-                                     dom = 'Bfrtip',
-                                     # buttons = c('csv', 'excel'),
-                                     columnDefs = list(list(targets = '_all', className = 'dt-center'),
-                                                       list(targets = c(0, 8, 9), visible = FALSE))
-                      ),
-                      # extensions = 'Buttons',
-                      # selection = 'single', ## enable selection of a single row
-                      # filter = 'bottom',              ## include column filters at the bottom
-                      rownames = TRUE )#,
-        #style = "font-size: 75%; width: 75%")
+    DT::datatable(data = data,
+                  rownames = TRUE,
+                  fillContainer = TRUE,
+                  # height = 880,
+                  options = list(paging = FALSE,    ## paginate the output
+                                 # pageLength = 20,  ## number of rows to output for each page
+                                 scrollX = TRUE,   ## enable scrolling on X axis
+                                 scrollY = "800px",   ## enable scrolling on Y axis
+                                 autoWidth = FALSE, ## use smart column width handling
+                                 server = FALSE,   ## use client-side processing
+                                 dom = 'Bfrtip',
+                                 columnDefs = list(
+
+                                   # Centers columns
+                                   list(targets = '_all',
+                                        className = 'dt-center'),
+
+                                   # Removes columns
+                                   list(targets = c(0, 15),
+                                        visible = FALSE)
+
+                                   ))) %>%
+
+      DT::formatRound(columns=c(".values"), digits=3)
+
   })
 
   output$download_data <- downloadHandler(
@@ -157,9 +163,9 @@ allocplots <- function(input, output, session,
     filename = function() {
 
       paste("PFU_",
-            unique(selected_data()$Ef.product),
+            as.character(unique(selected_data()$Ef.product)),
             "_",
-            unique(selected_data()$Destination),
+            as.character(unique(selected_data()$Destination)),
             "_",
             Sys.Date(),
             ".csv",
