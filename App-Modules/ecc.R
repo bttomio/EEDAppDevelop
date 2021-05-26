@@ -28,7 +28,7 @@ eccUI <- function(id) {
           step = 1,
           sep = "",
           width = "100%",
-          animate = TRUE),
+          animate = FALSE),
 
         selectizeInput(
           inputId = ns("Country"),
