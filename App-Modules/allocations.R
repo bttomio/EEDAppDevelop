@@ -28,24 +28,45 @@ allocplotsUI <- function(id) {
     box(title = "Variables",
         solidHeader = TRUE,
         width = 2,
+
         selectizeInput(inputId = ns("country"),
                        label = "Country:",
                        choices = countries,
                        multiple = TRUE %>%
                          sort()
         ),
+
         selectInput(inputId = ns("efproduct"),
                     label = "Final energy carrier:",
                     choices = unique(allocations$Ef.product) %>%
                       sort()
         ),
+
         selectInput(inputId = ns("destination"),
                     label = "Destination:",
                     choices = unique(allocations$Destination) %>%
                       sort()
         ),
+
+        selectInput(inputId = ns("dataformat"),
+                    label = "Data Format:",
+                    choices = c("Long", "Wide")
+        ),
+
+        tags$h5(tags$b("Download Selected Data"
+                )),
+
         downloadButton(outputId = ns("download_data"),
-                       label = "Download Data",
+                       label = "Download",
+                       class = NULL,
+                       icon = shiny::icon("download")
+        ),
+
+        tags$h5(tags$b("Download All Data"
+                )),
+
+        downloadButton(outputId = ns("download_alldata"),
+                       label = "Download",
                        class = NULL,
                        icon = shiny::icon("download")
         )
@@ -57,19 +78,23 @@ allocplotsUI <- function(id) {
 allocplots <- function(input, output, session,
                        country,
                        efproduct,
-                       destination) {
+                       destination,
+                       dataformat) {
 
   # Creates a dataframe with the selected country, efproduct, and destination
   selected_data <- reactive({
+
     validate(
       need(input$country != "", "Please select atleast one Country"),
       need(input$efproduct != "", "Please select one Final energy carrier"),
       need(input$destination != "", "Please select one Destination")
     )
+
     dplyr::filter(allocations_data,
                   Country %in% input$country,
                   Ef.product == input$efproduct,
                   Destination == input$destination)
+
   })
 
 
@@ -127,36 +152,103 @@ allocplots <- function(input, output, session,
 
   output$allocations_data <- renderDataTable({
 
-    data <- selected_data() %>%
-      as.data.frame()
+    req(input$dataformat)
 
-    #div(
-    DT::datatable(data = data,
-                  rownames = TRUE,
-                  fillContainer = TRUE,
-                  # height = 880,
-                  options = list(paging = FALSE,    ## paginate the output
-                                 # pageLength = 20,  ## number of rows to output for each page
-                                 scrollX = TRUE,   ## enable scrolling on X axis
-                                 scrollY = "800px",   ## enable scrolling on Y axis
-                                 autoWidth = FALSE, ## use smart column width handling
-                                 server = FALSE,   ## use client-side processing
-                                 dom = 'Bfrtip',
-                                 columnDefs = list(
+    if(input$dataformat == "Long"){
 
-                                   # Centers columns
-                                   list(targets = '_all',
-                                        className = 'dt-center'),
+      data_long <- selected_data() %>%
+        as.data.frame()
 
-                                   # Removes columns
-                                   list(targets = c(0, 15),
-                                        visible = FALSE)
+      allocations_table <- DT::datatable(data = data_long,
+                                         rownames = TRUE,
+                                         fillContainer = TRUE,
+                                         # height = 880,
+                                         options = list(paging = FALSE,    ## paginate the output
+                                                        # pageLength = 20,  ## number of rows to output for each page
+                                                        scrollX = TRUE,   ## enable scrolling on X axis
+                                                        scrollY = "800px",   ## enable scrolling on Y axis
+                                                        autoWidth = FALSE, ## use smart column width handling
+                                                        server = FALSE,   ## use client-side processing
+                                                        dom = 'Bfrtip',
+                                                        columnDefs = list(
 
-                                   ))) %>%
+                                                          # Centers columns
+                                                          list(targets = '_all',
+                                                              className = 'dt-center'),
 
-      DT::formatRound(columns=c(".values"), digits=3)
+                                                          # Removes columns
+                                                          list(targets = c(0, 15),
+                                                              visible = FALSE)
+
+                                                        ))) %>%
+        DT::formatRound(columns=c(".values"), digits=3)
+
+    } else if (input$dataformat == "Wide") {
+
+      data_wide <- selected_data() %>%
+        as.data.frame() %>%
+        tidyr::pivot_wider(names_from = "Year",
+                           values_from = ".values")
+
+      allocations_table <- DT::datatable(data = data_wide,
+                                         rownames = TRUE,
+                                         fillContainer = TRUE,
+                                         # height = 880,
+                                         options = list(paging = FALSE,    ## paginate the output
+                                                        # pageLength = 20,  ## number of rows to output for each page
+                                                        scrollX = TRUE,   ## enable scrolling on X axis
+                                                        scrollY = "800px",   ## enable scrolling on Y axis
+                                                        autoWidth = FALSE, ## use smart column width handling
+                                                        server = FALSE,   ## use client-side processing
+                                                        dom = 'Bfrtip',
+                                                        columnDefs = list(
+
+                                                          # Centers columns
+                                                          list(targets = '_all',
+                                                               className = 'dt-center'),
+
+                                                          # Removes columns
+                                                          list(targets = c(0, 13),
+                                                               visible = FALSE)
+
+                                                        ))) %>%
+        DT::formatRound(columns = IEATools::year_cols(data_wide), digits=3)
+
+    } else {
+
+      print("Error")
+
+    }
+
+    # DT::datatable(data = data,
+    #               rownames = TRUE,
+    #               fillContainer = TRUE,
+    #               # height = 880,
+    #               options = list(paging = FALSE,    ## paginate the output
+    #                              # pageLength = 20,  ## number of rows to output for each page
+    #                              scrollX = TRUE,   ## enable scrolling on X axis
+    #                              scrollY = "800px",   ## enable scrolling on Y axis
+    #                              autoWidth = TRUE, ## use smart column width handling
+    #                              server = FALSE,   ## use client-side processing
+    #                              dom = 'Bfrtip',
+    #                              columnDefs = list(
+    #
+    #                                # Centers columns
+    #                                list(targets = '_all',
+    #                                     className = 'dt-center'),
+    #
+    #                                # Removes columns
+    #                                list(targets = c(0, 15),
+    #                                     visible = FALSE)
+    #
+    #                                ))) %>%
+    #
+    #   DT::formatRound(columns=c(".values"), digits=3)
+
+    return(allocations_table)
 
   })
+
 
   output$download_data <- downloadHandler(
 
@@ -174,7 +266,65 @@ allocplots <- function(input, output, session,
 
     content = function(file) {
 
-      data <- selected_data()
+      req(input$dataformat)
+
+      if(input$dataformat == "Long"){
+
+        data <- selected_data() %>%
+          as.data.frame()
+
+
+      } else if (input$dataformat == "Wide") {
+
+        data <- selected_data() %>%
+          as.data.frame() %>%
+          tidyr::pivot_wider(names_from = "Year",
+                             values_from = ".values")
+
+      } else {
+
+        print("Error")
+
+      }
+
+      write.csv(data, file)
+    }
+
+  )
+
+
+  output$download_alldata <- downloadHandler(
+
+    filename = function() {
+
+      paste("PFU_",
+            Sys.Date(),
+            ".csv",
+            sep="")
+    },
+
+    content = function(file) {
+
+      req(input$dataformat)
+
+      if(input$dataformat == "Long"){
+
+        data <- allocations_data %>%
+          as.data.frame()
+
+
+      } else if (input$dataformat == "Wide") {
+
+        data <- allocations_data %>%
+          as.data.frame() %>%
+          tidyr::pivot_wider(names_from = "Year",
+                             values_from = ".values")
+
+      } else {
+
+        print("Error")
+
+      }
 
       write.csv(data, file)
     }

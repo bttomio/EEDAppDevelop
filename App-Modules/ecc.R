@@ -20,7 +20,7 @@ eccUI <- function(id) {
       splitLayout(
 
         sliderInput(
-          inputId = ns("Year"),
+          inputId = ns("year"),
           label = "Year",
           min = 1960,
           max = max_year,
@@ -31,7 +31,7 @@ eccUI <- function(id) {
           animate = FALSE),
 
         selectizeInput(
-          inputId = ns("Country"),
+          inputId = ns("country"),
           label = "Country:",
           choices = countries,
           width = "100%",
@@ -65,16 +65,34 @@ eccUI <- function(id) {
 
 # Establishes server module function
 ecc <- function(input, output, session,
-                Year,
-                Country,
-                sankey) {
+                year,
+                country) {
 
 
   # Creates reactive data frame for energy conversion chain from PSUT_useful target
   selected_data <- reactive({
     dplyr::filter(PSUT_useful_data,
-                  Country == input$Country,
-                  Year == input$Year)
+                  Country == input$country)
+
+  })
+
+
+  # These observe events update the year slider
+  observeEvent(input$year,  {
+
+    req(input$country)
+
+    year_min <- min(selected_data()$Year)
+
+    updateSliderInput(session,
+                      inputId = "year",
+                      min = year_min)
+  })
+
+  # Creates reactive data frame for energy conversion chain from PSUT_useful target
+  selected_data_2 <- reactive({
+    dplyr::filter(selected_data(),
+                  Year == input$year)
 
   })
 
@@ -82,18 +100,18 @@ ecc <- function(input, output, session,
   # Energy conversion chain sankey diagrams
   output$sankey <- renderSankeyNetwork({
 
-    ecc_sankey <- selected_data() %>%
+    ecc_sankey <- selected_data_2() %>%
       Recca::make_sankey(nodeWidth = 20,
                          units = "ktoe",
                          sinksRight = TRUE,
                          margin = list(left = 200)
-                         ) %>%
+      ) %>%
       magrittr::extract2("Sankey") %>%
       magrittr::extract2(2)
 
     # Add onRender JavaScript code
     ecc_sankey <- htmlwidgets::onRender(ecc_sankey,
-      'function(el, x) {
+                                        'function(el, x) {
 
       // Select all node text
       d3.selectAll(".node text")
@@ -103,7 +121,7 @@ ecc <- function(input, output, session,
         .attr("x", 20);
 
       }'
-      )
+    )
 
     ecc_sankey
 

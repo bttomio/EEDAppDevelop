@@ -2,19 +2,19 @@
 library(tidyverse)
 
 # Establishes UI module function
-etaphiplotsUI <- function(id) {
+etaplotsUI <- function(id) {
   ns <- NS(id)
 
   fluidRow(
-    tabBox(title = "Final-to-useful efficiencies and exergy-to-energy ratios",
-           id = "etaphi",
+    tabBox(title = "Final-to-Useful Efficiencies",
+           id = "eta",
            width = 10,
            height = 920,
            tabPanel(title = "Plots",
-                    plotlyOutput(outputId = ns("etaphi_plot"))
+                    plotlyOutput(outputId = ns("eta_plot"))
                     ),
            tabPanel(title = "Data",
-                    dataTableOutput(outputId = ns("etaphi_data")),
+                    dataTableOutput(outputId = ns("eta_data")),
                     style = "font-size:78%"
                     )
            ),
@@ -35,12 +35,12 @@ etaphiplotsUI <- function(id) {
                        ),
         selectInput(inputId = ns("machine"), # Need to change to FUMachine throughout
                     label = "Final-to-useful machine:",
-                    choices = unique(etaphi_data$Machine)
+                    choices = unique(eta_data$Machine)
                     %>% sort()
                     ),
         selectInput(inputId = ns("euproduct"),
                     label = "Useful product:",
-                    choices = unique(etaphi_data$Eu.product)
+                    choices = unique(eta_data$Eu.product)
                     %>% sort()
                     ),
         downloadButton(outputId = ns("download_data"),
@@ -55,7 +55,7 @@ etaphiplotsUI <- function(id) {
 } # Closes UI
 
 # Establishes the server module function
-etaphiplots <- function(input, output, session,
+etaplots <- function(input, output, session,
                         country,
                         EorX,
                         machine,
@@ -69,7 +69,7 @@ etaphiplots <- function(input, output, session,
       need(input$machine != "", "Please select one Machine"),
       need(input$euproduct != "", "Please select one Useful work product")
     )
-    dplyr::filter(etaphi_data,
+    dplyr::filter(eta_data,
                   Quantity == input$EorX,
                   Country %in% input$country,
                   Machine == input$machine,
@@ -79,7 +79,7 @@ etaphiplots <- function(input, output, session,
   # These observe events update the variables for selection
   observeEvent(input$country,  {
     req(input$country)
-    post_country_data <- etaphi_data %>%
+    post_country_data <- eta_data %>%
       dplyr::filter(Country %in% input$country)
 
     updateSelectInput(session,
@@ -90,7 +90,7 @@ etaphiplots <- function(input, output, session,
   observeEvent(input$machine,  {
     req(input$country)
     req(input$machine)
-    post_machine_data <- etaphi_data %>%
+    post_machine_data <- eta_data %>%
       dplyr::filter(Country %in% input$country) %>%
       dplyr::filter(Machine %in% input$machine)
 
@@ -100,7 +100,7 @@ etaphiplots <- function(input, output, session,
     })
 
   # Machine - Useful work combination eta.fu plots
-  output$etaphi_plot <- renderPlotly({
+  output$eta_plot <- renderPlotly({
       p <- ggplot2::ggplot(data = selected_data()) +
         ggplot2::geom_line(mapping = aes(x = Year, y = .values, colour = Country)) +
         ggplot2::scale_y_continuous(limits = c(0, 1), breaks = c(0, 0.2, 0.4, 0.6, 0.8, 1)) +
@@ -114,7 +114,7 @@ etaphiplots <- function(input, output, session,
 
     })
 
-  output$etaphi_data <- renderDataTable({
+  output$eta_data <- renderDataTable({
 
     data <- selected_data() %>%
       as.data.frame()

@@ -52,7 +52,7 @@ source("App-Modules/relresources.R", local = TRUE)
 # Load PFU modules
 source("App-Modules/intro_pfu.R", local = TRUE)
 source("App-Modules/allocations.R", local = TRUE)
-source("App-Modules/etaphi.R", local = TRUE)
+source("App-Modules/eta.R", local = TRUE)
 source("App-Modules/ecc.R", local = TRUE)
 source("App-Modules/sum_dash_pfu.R", local = TRUE)
 source("App-Modules/documentation.R", local = TRUE)
@@ -161,7 +161,7 @@ ui = dashboardPage(
 
                          menuItem("Final-to-useful Allocations", tabName = "allocations", icon = icon("chart-pie")),
 
-                         menuItem("Final-to-useful Efficiencies", tabName = "eta_phi", icon = icon("chart-line")),
+                         menuItem("Final-to-useful Efficiencies", tabName = "eta", icon = icon("chart-line")),
 
                          menuItem("Database documentation", tabName = "documentation", icon = icon("book")),
 
@@ -251,8 +251,8 @@ ui = dashboardPage(
       tabItem(tabName = "allocations",
               allocplotsUI(id = "allocations1")),
 
-      tabItem(tabName = "eta_phi",
-              etaphiplotsUI(id = "etaphi1")),
+      tabItem(tabName = "eta",
+              etaplotsUI(id = "eta1")),
 
       tabItem(tabName = "documentation",
               documentationUI(id = "doc1")),
@@ -362,10 +362,10 @@ server <- function(input, output, session) {
              id = "allocations1",
              allocations_data)
 
-  # Calls etaphi.R module
-  callModule(module = etaphiplots,
-             id = "etaphi1",
-             etaphi_data)
+  # Calls eta.R module
+  callModule(module = etaplots,
+             id = "eta1",
+             eta_data)
 
   # Calls ecc.R module
   callModule(module = ecc,
