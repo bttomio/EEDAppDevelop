@@ -7,11 +7,6 @@ allocplotsUI <- function(id) {
 
   fluidRow(
 
-    # Sets table style - Allocations data table
-    tags$head(tags$style("#allocations table {background-color: white; }",
-                         media="screen",
-                         type="text/css")),
-
     tabBox(title = "Final-to-useful Allocations",
            id = "allocations",
            width = 10,

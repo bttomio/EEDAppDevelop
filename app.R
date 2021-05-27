@@ -51,10 +51,11 @@ source("App-Modules/relresources.R", local = TRUE)
 
 # Load PFU modules
 source("App-Modules/intro_pfu.R", local = TRUE)
+source("App-Modules/sum_dash_pfu.R", local = TRUE)
 source("App-Modules/allocations.R", local = TRUE)
 source("App-Modules/eta.R", local = TRUE)
+source("App-Modules/consumption.R", local = TRUE)
 source("App-Modules/ecc.R", local = TRUE)
-source("App-Modules/sum_dash_pfu.R", local = TRUE)
 source("App-Modules/documentation.R", local = TRUE)
 
 # Load Energy-Economy modules
@@ -157,11 +158,13 @@ ui = dashboardPage(
 
                          menuItem("PFU Dashboard", tabName = "dashboard_pfu", icon = icon("dashboard")),
 
-                         menuItem("Energy Conversion Chain", tabName = "sankey", icon = icon("project-diagram")),
-
                          menuItem("Final-to-useful Allocations", tabName = "allocations", icon = icon("chart-pie")),
 
                          menuItem("Final-to-useful Efficiencies", tabName = "eta", icon = icon("chart-line")),
+
+                         menuItem("PFU Consumption", tabName = "consumption", icon = icon("lightbulb")),
+
+                         menuItem("Energy Conversion Chain", tabName = "sankey", icon = icon("project-diagram")),
 
                          menuItem("Database documentation", tabName = "documentation", icon = icon("book")),
 
@@ -253,6 +256,9 @@ ui = dashboardPage(
 
       tabItem(tabName = "eta",
               etaplotsUI(id = "eta1")),
+
+      tabItem(tabName = "consumption",
+              consumptionUI(id = "consumption1")),
 
       tabItem(tabName = "documentation",
               documentationUI(id = "doc1")),
@@ -357,6 +363,13 @@ server <- function(input, output, session) {
 
   ## PFU-Database modules
 
+  # Calls sum_dash_pfu.R module
+  callModule(module = sumdashplots,
+             id = "dash1",
+             PSUT_etas,
+             PSUT_metrics_total,
+             GDP_metrics)
+
   # Calls allocations.R module
   callModule(module = allocplots,
              id = "allocations1",
@@ -372,14 +385,11 @@ server <- function(input, output, session) {
              id = "ecc1",
              PSUT_useful_data)
 
-  # Calls sum_dash_pfu.R module
-  callModule(module = sumdashplots,
-             id = "dash1",
-             PSUT_etas,
-             PSUT_metrics_total,
-             GDP_metrics)
+  # Calls consumption.R module
+  callModule(module = consumption,
+             id = "consumption1",
+             PSUT_metrics_total)
 
-  # Calls decomposition module
 
 
   ## Energy-Economy modules
