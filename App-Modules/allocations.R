@@ -42,16 +42,16 @@ allocplotsUI <- function(id) {
 
         selectInput(inputId = ns("dataformat"),
                     label = "Data Format:",
-                    choices = c("Long", "Wide")),
+                    choices = c("Wide", "Long")),
 
-        tags$h5(tags$b("Download Selected Data")),
+        tags$h5(tags$b("Selected Allocation Data")),
 
         downloadButton(outputId = ns("download_data"),
                        label = "Download",
                        class = NULL,
                        icon = shiny::icon("download")),
 
-        tags$h5(tags$b("Download All Data")),
+        tags$h5(tags$b("All Allocation Data")),
 
         downloadButton(outputId = ns("download_alldata"),
                        label = "Download",

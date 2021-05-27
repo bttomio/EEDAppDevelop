@@ -45,7 +45,7 @@ etaplotsUI <- function(id) {
 
         selectInput(inputId = ns("dataformat"),
                     label = "Data Format:",
-                    choices = c("Long", "Wide")),
+                    choices = c("Wide", "Long")),
 
         tags$h5(tags$b("Download Selected Data")),
 
