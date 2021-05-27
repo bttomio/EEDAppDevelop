@@ -28,43 +28,35 @@ allocplotsUI <- function(id) {
                        label = "Country:",
                        choices = countries,
                        multiple = TRUE %>%
-                         sort()
-        ),
+                         sort()),
 
         selectInput(inputId = ns("efproduct"),
                     label = "Final energy carrier:",
                     choices = unique(allocations$Ef.product) %>%
-                      sort()
-        ),
+                      sort()),
 
         selectInput(inputId = ns("destination"),
                     label = "Destination:",
                     choices = unique(allocations$Destination) %>%
-                      sort()
-        ),
+                      sort()),
 
         selectInput(inputId = ns("dataformat"),
                     label = "Data Format:",
-                    choices = c("Long", "Wide")
-        ),
+                    choices = c("Long", "Wide")),
 
-        tags$h5(tags$b("Download Selected Data"
-                )),
+        tags$h5(tags$b("Download Selected Data")),
 
         downloadButton(outputId = ns("download_data"),
                        label = "Download",
                        class = NULL,
-                       icon = shiny::icon("download")
-        ),
+                       icon = shiny::icon("download")),
 
-        tags$h5(tags$b("Download All Data"
-                )),
+        tags$h5(tags$b("Download All Data")),
 
         downloadButton(outputId = ns("download_alldata"),
                        label = "Download",
                        class = NULL,
-                       icon = shiny::icon("download")
-        )
+                       icon = shiny::icon("download"))
     )
   )
 }

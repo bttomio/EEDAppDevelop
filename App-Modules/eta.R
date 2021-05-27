@@ -23,31 +23,44 @@ etaplotsUI <- function(id) {
         solidHeader = TRUE,
         width = 2,
 
-        selectInput(inputId = ns("EorX"),
-                    label = "Energy Quantification:",
-                    choices = c(Energy = "eta.fu", `Exergy-to-energy ratio` = "phi.u")
-                    ),
         selectizeInput(inputId = ns("country"),
                        label = "Country:",
                        choices = countries,
                        multiple = TRUE
-                       %>% sort()
-                       ),
+                       %>% sort()),
+
+        selectInput(inputId = ns("EorX"),
+                    label = "Energy Quantification:",
+                    choices = c(Energy = "eta.fu", `Exergy-to-energy ratio` = "phi.u")),
+
         selectInput(inputId = ns("machine"), # Need to change to FUMachine throughout
                     label = "Final-to-useful machine:",
                     choices = unique(eta_data$Machine)
-                    %>% sort()
-                    ),
+                    %>% sort()),
+
         selectInput(inputId = ns("euproduct"),
                     label = "Useful product:",
                     choices = unique(eta_data$Eu.product)
-                    %>% sort()
-                    ),
+                    %>% sort()),
+
+        selectInput(inputId = ns("dataformat"),
+                    label = "Data Format:",
+                    choices = c("Long", "Wide")),
+
+        tags$h5(tags$b("Download Selected Data")),
+
         downloadButton(outputId = ns("download_data"),
-                       label = "Download Data",
+                       label = "Download",
                        class = NULL,
-                       icon = shiny::icon("download")
-                       )
+                       icon = shiny::icon("download")),
+
+        tags$h5(tags$b("Download All Data")),
+
+        downloadButton(outputId = ns("download_alldata"),
+                       label = "Download",
+                       class = NULL,
+                       icon = shiny::icon("download"))
+
         ) # Closes variables box
 
   ) # Closes fluidrow
@@ -116,34 +129,100 @@ etaplots <- function(input, output, session,
 
   output$eta_data <- renderDataTable({
 
-    data <- selected_data() %>%
-      as.data.frame()
+    req(input$dataformat)
 
-    #div(
-    DT::datatable(data = data,
-                  rownames = TRUE,
-                  fillContainer = TRUE,
-                  # height = 880,
-                  options = list(paging = FALSE,    ## paginate the output
-                                 # pageLength = 20,  ## number of rows to output for each page
-                                 scrollX = TRUE,   ## enable scrolling on X axis
-                                 scrollY = "800px",   ## enable scrolling on Y axis
-                                 autoWidth = FALSE, ## use smart column width handling
-                                 server = FALSE,   ## use client-side processing
-                                 dom = 'Bfrtip',
-                                 columnDefs = list(
+    if(input$dataformat == "Long"){
 
-                                   # Centers columns
-                                   list(targets = '_all',
-                                        className = 'dt-center'),
+      data_long <- selected_data() %>%
+        as.data.frame()
 
-                                   # Removes columns
-                                   list(targets = c(0),
-                                        visible = FALSE)
+      eta_table <- DT::datatable(data = data_long,
+                                 rownames = TRUE,
+                                 fillContainer = TRUE,
+                                 # height = 880,
+                                 options = list(paging = FALSE,    ## paginate the output
+                                                # pageLength = 20,  ## number of rows to output for each page
+                                                scrollX = TRUE,   ## enable scrolling on X axis
+                                                scrollY = "800px",   ## enable scrolling on Y axis
+                                                autoWidth = FALSE, ## use smart column width handling
+                                                server = FALSE,   ## use client-side processing
+                                                dom = 'Bfrtip',
+                                                columnDefs = list(
 
-                                   ))) %>%
+                                                  # Centers columns
+                                                  list(targets = '_all',
+                                                       className = 'dt-center'),
 
-      DT::formatRound(columns=c(".values"), digits=3)
+                                                  # Removes columns
+                                                  list(targets = c(0),
+                                                       visible = FALSE)
+
+                                                ))) %>%
+        DT::formatRound(columns=c(".values"), digits=3)
+
+    } else if (input$dataformat == "Wide") {
+
+      data_wide <- selected_data() %>%
+        as.data.frame() %>%
+        tidyr::pivot_wider(names_from = "Year",
+                           values_from = ".values")
+
+      eta_table <- DT::datatable(data = data_wide,
+                                 rownames = TRUE,
+                                 fillContainer = TRUE,
+                                 # height = 880,
+                                 options = list(paging = FALSE,    ## paginate the output
+                                                # pageLength = 20,  ## number of rows to output for each page
+                                                scrollX = TRUE,   ## enable scrolling on X axis
+                                                scrollY = "800px",   ## enable scrolling on Y axis
+                                                autoWidth = FALSE, ## use smart column width handling
+                                                server = FALSE,   ## use client-side processing
+                                                dom = 'Bfrtip',
+                                                columnDefs = list(
+
+                                                  # Centers columns
+                                                  list(targets = '_all',
+                                                       className = 'dt-center'),
+
+                                                  # Removes columns
+                                                  list(targets = c(0),
+                                                       visible = FALSE)
+
+                                                ))) %>%
+        DT::formatRound(columns = IEATools::year_cols(data_wide), digits=3)
+
+    } else {
+
+      print("Error")
+
+    }
+
+    # DT::datatable(data = data,
+    #               rownames = TRUE,
+    #               fillContainer = TRUE,
+    #               # height = 880,
+    #               options = list(paging = FALSE,    ## paginate the output
+    #                              # pageLength = 20,  ## number of rows to output for each page
+    #                              scrollX = TRUE,   ## enable scrolling on X axis
+    #                              scrollY = "800px",   ## enable scrolling on Y axis
+    #                              autoWidth = TRUE, ## use smart column width handling
+    #                              server = FALSE,   ## use client-side processing
+    #                              dom = 'Bfrtip',
+    #                              columnDefs = list(
+    #
+    #                                # Centers columns
+    #                                list(targets = '_all',
+    #                                     className = 'dt-center'),
+    #
+    #                                # Removes columns
+    #                                list(targets = c(0, 15),
+    #                                     visible = FALSE)
+    #
+    #                                ))) %>%
+    #
+    #   DT::formatRound(columns=c(".values"), digits=3)
+
+    return(eta_table)
 
   })
 
@@ -163,7 +242,65 @@ etaplots <- function(input, output, session,
 
     content = function(file) {
 
-      data <- selected_data()
+      req(input$dataformat)
+
+      if(input$dataformat == "Long"){
+
+        data <- selected_data() %>%
+          as.data.frame()
+
+
+      } else if (input$dataformat == "Wide") {
+
+        data <- selected_data() %>%
+          as.data.frame() %>%
+          tidyr::pivot_wider(names_from = "Year",
+                             values_from = ".values")
+
+      } else {
+
+        print("Error")
+
+      }
+
+      write.csv(data, file)
+    }
+
+  )
+
+
+  output$download_alldata <- downloadHandler(
+
+    filename = function() {
+
+      paste("PFU_",
+            Sys.Date(),
+            ".csv",
+            sep="")
+    },
+
+    content = function(file) {
+
+      req(input$dataformat)
+
+      if(input$dataformat == "Long"){
+
+        data <- eta_data %>%
+          as.data.frame()
+
+
+      } else if (input$dataformat == "Wide") {
+
+        data <- eta_data %>%
+          as.data.frame() %>%
+          tidyr::pivot_wider(names_from = "Year",
+                             values_from = ".values")
+
+      } else {
+
+        print("Error")
+
+      }
 
       write.csv(data, file)
     }
