@@ -29,9 +29,9 @@ etaplotsUI <- function(id) {
                        multiple = TRUE
                        %>% sort()),
 
-        selectInput(inputId = ns("EorX"),
-                    label = "Energy Quantification:",
-                    choices = c(Energy = "eta.fu", `Exergy-to-energy ratio` = "phi.u")),
+        selectInput(inputId = ns("metric"),
+                    label = "Metric",
+                    choices = c(`Energy efficiency` = "eta.fu", `Exergy efficiency` = "etaX.fu", `Exergy-to-energy ratio` = "phi.u")),
 
         selectInput(inputId = ns("machine"), # Need to change to FUMachine throughout
                     label = "Final-to-useful machine:",
@@ -70,20 +70,20 @@ etaplotsUI <- function(id) {
 # Establishes the server module function
 etaplots <- function(input, output, session,
                         country,
-                        EorX,
+                        metric,
                         machine,
                         euproduct) {
 
   # Creates a dataframe with the selected country, machine, and Eu.product
   selected_data <- reactive({
     validate(
-      need(input$EorX != "", "Please select atleast one Energy quantification"),
+      need(input$metric != "", "Please select atleast one Energy quantification"),
       need(input$country != "", "Please select atleast one Country"),
       need(input$machine != "", "Please select one Machine"),
       need(input$euproduct != "", "Please select one Useful work product")
     )
     dplyr::filter(eta_data,
-                  Quantity == input$EorX,
+                  Quantity == input$metric,
                   Country %in% input$country,
                   Machine == input$machine,
                   Eu.product == input$euproduct)
