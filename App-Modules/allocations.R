@@ -132,10 +132,6 @@ allocplots <- function(input, output, session,
                        legend = list(font = list(size = 12))) %>%
         move_annotations(x = -0.05, y = 0.97, mar = 80)
 
-      # p_plotly[['x']][['layout']][['annotations']][[1]][['x']] <- -0.06
-      #
-      # p_plotly %>% plotly::layout(margin = list(l = 75))
-
   })
 
   output$allocations_data <- renderDataTable({
@@ -207,31 +203,6 @@ allocplots <- function(input, output, session,
       print("Error")
 
     }
-
-    # DT::datatable(data = data,
-    #               rownames = TRUE,
-    #               fillContainer = TRUE,
-    #               # height = 880,
-    #               options = list(paging = FALSE,    ## paginate the output
-    #                              # pageLength = 20,  ## number of rows to output for each page
-    #                              scrollX = TRUE,   ## enable scrolling on X axis
-    #                              scrollY = "800px",   ## enable scrolling on Y axis
-    #                              autoWidth = TRUE, ## use smart column width handling
-    #                              server = FALSE,   ## use client-side processing
-    #                              dom = 'Bfrtip',
-    #                              columnDefs = list(
-    #
-    #                                # Centers columns
-    #                                list(targets = '_all',
-    #                                     className = 'dt-center'),
-    #
-    #                                # Removes columns
-    #                                list(targets = c(0, 15),
-    #                                     visible = FALSE)
-    #
-    #                                ))) %>%
-    #
-    #   DT::formatRound(columns=c(".values"), digits=3)
 
     return(allocations_table)
 

@@ -33,7 +33,7 @@ etaplotsUI <- function(id) {
                     label = "Metric",
                     choices = c(`Energy efficiency` = "eta.fu", `Exergy efficiency` = "etaX.fu", `Exergy-to-energy ratio` = "phi.u")),
 
-        selectInput(inputId = ns("machine"), # Need to change to FUMachine throughout
+        selectInput(inputId = ns("machine"),
                     label = "Final-to-useful machine:",
                     choices = unique(eta_data$Machine)
                     %>% sort()),
@@ -198,31 +198,6 @@ etaplots <- function(input, output, session,
       print("Error")
 
     }
-
-    # DT::datatable(data = data,
-    #               rownames = TRUE,
-    #               fillContainer = TRUE,
-    #               # height = 880,
-    #               options = list(paging = FALSE,    ## paginate the output
-    #                              # pageLength = 20,  ## number of rows to output for each page
-    #                              scrollX = TRUE,   ## enable scrolling on X axis
-    #                              scrollY = "800px",   ## enable scrolling on Y axis
-    #                              autoWidth = TRUE, ## use smart column width handling
-    #                              server = FALSE,   ## use client-side processing
-    #                              dom = 'Bfrtip',
-    #                              columnDefs = list(
-    #
-    #                                # Centers columns
-    #                                list(targets = '_all',
-    #                                     className = 'dt-center'),
-    #
-    #                                # Removes columns
-    #                                list(targets = c(0, 15),
-    #                                     visible = FALSE)
-    #
-    #                                ))) %>%
-    #
-    #   DT::formatRound(columns=c(".values"), digits=3)
 
     return(eta_table)
 
