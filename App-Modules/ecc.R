@@ -113,14 +113,14 @@ ecc <- function(input, output, session,
     ecc_sankey <- htmlwidgets::onRender(ecc_sankey,
                                         'function(el, x) {
 
-      // Select all node text
-      d3.selectAll(".node text")
-        .style("fill", "black") // Set text colour to black
-        .style("font-size", "12px") // Change font size to 12
-        .attr("text-anchor", "begin") // Set text node side to right
-        .attr("x", 20);
+                                        // Select all node text
+                                        d3.selectAll(".node text")
+                                          .style("fill", "black") // Set text colour to black
+                                          .style("font-size", "12px") // Change font size to 12
+                                          .attr("text-anchor", "begin") // Set text node side to right
+                                          .attr("x", 20);
 
-      }'
+                                        }'
     )
 
     ecc_sankey
