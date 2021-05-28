@@ -78,7 +78,7 @@ ecc <- function(input, output, session,
 
 
   # These observe events update the year slider
-  observeEvent(input$year,  {
+  observeEvent(input$country,  {
 
     req(input$country)
 
@@ -86,7 +86,8 @@ ecc <- function(input, output, session,
 
     updateSliderInput(session,
                       inputId = "year",
-                      min = year_min)
+                      min = year_min,
+                      value = year_min)
   })
 
   # Creates reactive data frame for energy conversion chain from PSUT_useful target
