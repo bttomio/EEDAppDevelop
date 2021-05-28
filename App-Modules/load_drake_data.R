@@ -44,9 +44,9 @@ MachineData <- drake::readd(SEAPSUTWorkflow::target_names$AllMachineData,
 
 
 # Creates a df with the final-to-useful efficiency (eta) and exergy-to-energy ratio (phi) data target
-etaphi_data <- drake::readd(SEAPSUTWorkflow::target_names$CompletedEfficiencyTables,
-                            path = cache_path,
-                            character_only = TRUE)
+eta_data <- drake::readd(SEAPSUTWorkflow::target_names$CompletedEfficiencyTables,
+                         path = cache_path,
+                         character_only = TRUE)
 
 # Creates a df with the Destination-Machine&Eu.product allocation data target
 allocations_data <- drake::readd(SEAPSUTWorkflow::target_names$CompletedAllocationTables,
