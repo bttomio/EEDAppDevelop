@@ -122,7 +122,9 @@ etaplots <- function(input, output, session,
         ggplot2::ylab("Final-to-useful Efficiency [-]") +
         MKHthemes::xy_theme()
 
-      plotly::ggplotly(p, height = 850) %>%
+      plotly::ggplotly(p,
+                       height = 850,
+                       tooltip = c("Year", ".values", "Country")) %>%
         move_legend_annotation_no_facet(y = 0.97, mar = 80)
 
     })

@@ -113,7 +113,6 @@ allocplots <- function(input, output, session,
       p <- ggplot2::ggplot(data = selected_data()) +
         ggplot2::geom_area(mapping = aes(x = Year,
                                          y = .values,
-                                         group = Machine_Eu.product,
                                          fill = Machine_Eu.product),
                            position = "fill") +
         ggplot2::scale_y_continuous(limits = c(0, 1), breaks = c(0, 0.2, 0.4, 0.6, 0.8, 1)) +
@@ -126,7 +125,9 @@ allocplots <- function(input, output, session,
         MKHthemes::xy_theme()
 
 
-      p_plotly <- plotly::ggplotly(p, height = 850) %>%
+      p_plotly <- plotly::ggplotly(p,
+                                   height = 850,
+                                   tooltip = c("Year", ".values", "Machine_Eu.product")) %>%
         plotly::layout(showlegend = TRUE,
                        legend = list(font = list(size = 12))) %>%
         move_annotations(x = -0.05, y = 0.97, mar = 80)

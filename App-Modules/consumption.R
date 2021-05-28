@@ -16,10 +16,10 @@ consumptionUI <- function(id) {
            #          dataTableOutput(outputId = ns("consumption_indexed_data")),
            #          style = "font-size:78%"),
 
-           tabPanel(title = "Plots - Consumption",
+           tabPanel(title = "Plots",
                     plotlyOutput(outputId = ns("consumption_plot"))),
 
-           tabPanel(title = "Data - Consumption",
+           tabPanel(title = "Data",
                     dataTableOutput(outputId = ns("consumption_data")),
                     style = "font-size:78%")
            ),
@@ -32,12 +32,14 @@ consumptionUI <- function(id) {
                        label = "Country:",
                        choices = countries,
                        multiple = TRUE %>%
-                         sort()),
+                         sort(),
+                       width = "100%",
+                       options = list(dropdownParent = 'body')),
 
         selectizeInput(inputId = ns("EorX"),
                        label = "Energy Type:",
                        choices = c(Energy = "E", `Exergy` = "X"),
-                       width = "150px",
+                       width = "100%",
                        options = list(dropdownParent = 'body')),
 
         selectizeInput(inputId = ns("stage"),
@@ -45,7 +47,7 @@ consumptionUI <- function(id) {
                        choices = c(Primary = "Primary",
                                    Final = "Final",
                                    Useful = "Useful"),
-                       width = "150px",
+                       width = "100%",
                        options = list(dropdownParent = 'body')),
 
         selectizeInput(inputId = ns("gross_net"),
@@ -54,7 +56,7 @@ consumptionUI <- function(id) {
                                    Gross = "Gross",
                                    Net = "Net")
                        %>% sort(),
-                       width = "150px",
+                       width = "100%",
                        options = list(dropdownParent = 'body')),
 
         selectizeInput(inputId = ns("aggby"),
@@ -62,18 +64,20 @@ consumptionUI <- function(id) {
                        choices = c(Total = "Total",
                                    Product = "Product",
                                    `Flow or Sector` = "flowsec"),
-                       width = "150px",
+                       width = "100%",
                        options = list(dropdownParent = 'body')),
 
         selectizeInput(inputId = ns("stackfill"),
                        label = "Stack or Fill Area Plots:",
                        choices = c(Stack = "Stack", Fill = "Fill"),
-                       width = "150px",
+                       width = "100%",
                        options = list(dropdownParent = 'body')),
 
-        selectInput(inputId = ns("dataformat"),
-                    label = "Data Format:",
-                    choices = c("Wide", "Long")),
+        selectizeInput(inputId = ns("dataformat"),
+                       label = "Data Format:",
+                       choices = c("Wide", "Long"),
+                       width = "100%",
+                       options = list(dropdownParent = 'body')),
 
 
         tags$h5(tags$b("Download Selected Data")),
