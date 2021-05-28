@@ -9,19 +9,17 @@ consumptionUI <- function(id) {
            width = 10,
            height = 920,
 
-           tabPanel(title = "Plots - Indexed",
-                    plotlyOutput(outputId = ns("consumption_indexed_plot"))),
+           # tabPanel(title = "Plots - Indexed",
+           #          plotlyOutput(outputId = ns("consumption_indexed_plot"))),
+           #
+           # tabPanel(title = "Data - Indexed",
+           #          dataTableOutput(outputId = ns("consumption_indexed_data")),
+           #          style = "font-size:78%"),
 
-           tabPanel(title = "Plots - Total",
-                    plotlyOutput(outputId = ns("consumption_total_plot"))),
+           tabPanel(title = "Plots - Consumption",
+                    plotlyOutput(outputId = ns("consumption_plot"))),
 
-           tabPanel(title = "Plots - Product",
-                    plotlyOutput(outputId = ns("consumption_product_plot"))),
-
-           tabPanel(title = "Plots - Flow or Sector",
-                    plotlyOutput(outputId = ns("consumption_flowsec_plot"))),
-
-           tabPanel(title = "Data",
+           tabPanel(title = "Data - Consumption",
                     dataTableOutput(outputId = ns("consumption_data")),
                     style = "font-size:78%")
            ),
@@ -59,6 +57,14 @@ consumptionUI <- function(id) {
                        width = "150px",
                        options = list(dropdownParent = 'body')),
 
+        selectizeInput(inputId = ns("aggby"),
+                       label = "Aggregation:",
+                       choices = c(Total = "Total",
+                                   Product = "Product",
+                                   `Flow or Sector` = "flowsec"),
+                       width = "150px",
+                       options = list(dropdownParent = 'body')),
+
         selectizeInput(inputId = ns("stackfill"),
                        label = "Stack or Fill Area Plots:",
                        choices = c(Stack = "Stack", Fill = "Fill"),
@@ -67,7 +73,7 @@ consumptionUI <- function(id) {
 
         selectInput(inputId = ns("dataformat"),
                     label = "Data Format:",
-                    choices = c("Long", "Wide")),
+                    choices = c("Wide", "Long")),
 
 
         tags$h5(tags$b("Download Selected Data")),
@@ -97,6 +103,7 @@ consumption <- function(input, output, session,
                         EorX,
                         stage,
                         gross_net,
+                        aggby,
                         stackfill,
                         dataformat) {
 
@@ -105,7 +112,8 @@ consumption <- function(input, output, session,
 ################################################################################
 
 
-  # These observe events update the variables for selection
+  # Update value of Gross.Net so combinations of Stage and Gross.Net that don't
+  # exist e.g. Primary and Net, cannot be selected
   observeEvent(input$stage,  {
     req(input$stage)
 
@@ -126,55 +134,44 @@ consumption <- function(input, output, session,
                       choices = gross_net)
   })
 
+
 ################################################################################
 # Select data
 ################################################################################
 
-  # Creates reactive data frame for indexed EX
-  selected_data_i <- reactive({
+  # # Creates reactive data frame for indexed EX
+  # selected_data_i <- reactive({
+  #   validate(
+  #     need(input$country != "", "Please select atleast one country")
+  #   )
+  #
+  #   data <- PSUT_metrics_total_i %>%
+  #     dplyr::filter(Aggregation.by == "Total") %>%
+  #     dplyr::filter(Energy.type == input$EorX) %>%
+  #     dplyr::filter(Gross.Net %in% c("Neither", "Net")) %>%
+  #     dplyr::filter(Country == input$country)
+  #
+  #   data$Stage <- factor(data$Stage, levels = c("Primary", "Final", "Useful"))
+  #
+  #   data
+  #
+  #
+  # })
+
+  # Creates reactive data frame for EX data aggregated by selected value
+  selected_data_consumption <- reactive({
     validate(
-      # need(input$stage != "", "Please select atleast one Energy Conversion Chain (ECC) stage")
+      need(input$country != "", "Please select atleast one country")
     )
 
-    data <- PSUT_metrics_total_i %>%
-      dplyr::filter(Aggregation.by == "Total") %>%
-      dplyr::filter(Energy.type == input$EorX) %>%
-      # dplyr::filter(Stage == input$stage) %>%
-      dplyr::filter(Gross.Net %in% c("Neither", "Net")) %>%
-      dplyr::filter(Country == input$country)
-
-    data$Stage <- factor(data$Stage, levels = c("Primary", "Final", "Useful"))
-
-    data
-
-
-  })
-
-
-  # Creates reactive data frame for EX by product plot
-  selected_data_prod <- reactive({
-    validate(
-      # need(input$stage != "", "Please select one Energy Conversion Chain (ECC) stage")
-    )
+    if(input$aggby == "flowsec"){
+      aggby_value = c("Flow", "Sector")
+    } else {
+      aggby_value = input$aggby
+    }
 
     Agg_all_data %>%
-      dplyr::filter(Aggregation.by == "Product") %>%
-      dplyr::filter(Energy.type == input$EorX,
-                    Gross.Net == input$gross_net,
-                    Stage == input$stage,
-                    Country == input$country)
-  })
-
-
-  # Creates reactive data frame for EX by product plot
-  selected_data_flowsec <- reactive({
-    validate(
-      # need(input$stage != "", "Please select one Energy Conversion Chain (ECC) stage")
-    )
-
-    Agg_all_data %>%
-      dplyr::mutate(Gross.Net = ifelse(is.na(Gross.Net), "Neither", Gross.Net)) %>%
-      dplyr::filter(Aggregation.by == c("Flow", "Sector")) %>%
+      dplyr::filter(Aggregation.by %in% aggby_value) %>%
       dplyr::filter(Energy.type == input$EorX,
                     Gross.Net == input$gross_net,
                     Stage == input$stage,
@@ -190,41 +187,64 @@ consumption <- function(input, output, session,
   # Creates colour scheme
   cols <- c("Primary" = "red4", "Final" = "red", "Useful" = "orange", "GDP.i" = "black")
 
-  # Plots indexed data
-  output$consumption_indexed_plot <- renderPlotly({
-    p_i <- ggplot2::ggplot(data = selected_data_i()) +
 
-      ggplot2::geom_line(mapping = aes(x = Year, y = EX.i, color = Stage)) +
+  # # Plots indexed data
+  # output$consumption_indexed_plot <- renderPlotly({
+  #   p_i <- ggplot2::ggplot(data = selected_data_i()) +
+  #
+  #     ggplot2::geom_line(mapping = aes(x = Year, y = EX.i, color = Stage)) +
+  #
+  #     ggplot2::scale_colour_manual(values = cols) +
+  #
+  #     # ggplot2::scale_x_continuous(limits = c(1960, 2020), breaks = seq(1960, 2020, by = 10)) +
+  #
+  #     ggplot2::xlab("") +
+  #     ggplot2::ylab("Indexed Value [-]") +
+  #     MKHthemes::xy_theme()
+  #
+  #   p_i_plotly <- plotly::ggplotly(p_i, height = 850, tooltip = c("Year","Stage", "EX.i", "GDP.i")) %>%
+  #
+  #     plotly::layout(showlegend = as.logical(input$legend),
+  #                    legend = list(itemclick = TRUE,
+  #                                  itemdoubleclick = TRUE)) %>%
+  #     move_annotations(x = 1.02, y = 0.97, mar = 80)
+  #
+  # })
 
-      ggplot2::scale_colour_manual(values = cols) +
 
-      # ggplot2::scale_x_continuous(limits = c(1960, 2020), breaks = seq(1960, 2020, by = 10)) +
+  # EX plot - aggreated by selected value
+  output$consumption_plot <- renderPlotly({
 
-      ggplot2::xlab("") +
-      ggplot2::ylab("Indexed Value [-]") +
-      MKHthemes::xy_theme()
+    # Establishes highlight keys
+    if(input$aggby == "Total"){
+      key_consumption <- "E.product"
+    } else if (input$aggby == "Product"){
+      key_consumption <- "E.product"
+    } else if (input$aggby == "flowsec"){
+      key_consumption <- "Flow.Sector"
+    }
 
-    p_i_plotly <- plotly::ggplotly(p_i, height = 850, tooltip = c("Year","Stage", "EX.i", "GDP.i")) %>%
+    # Establishes fill values
+    if(input$aggby == "Total"){
+      fill_consumption <- "Aggregation.by"
+    } else if (input$aggby == "Product"){
+      fill_consumption <- "E.product"
+    } else if (input$aggby == "flowsec"){
+      fill_consumption <- "Flow.Sector"
+    }
 
-      plotly::layout(showlegend = as.logical(input$legend),
-                     legend = list(itemclick = TRUE,
-                                   itemdoubleclick = TRUE)) %>%
-      move_annotations(x = 1.02, y = 0.97, mar = 80)
+    # Attaches highlight key to data
+    consumption_data <- highlight_key(selected_data_consumption(), key = key_consumption)
 
-  })
+    # Finds minimum year
+    # year_min <- min(selected_data_consumption()$Year)
 
-  # EX by product stacked area plots
-  output$consumption_product_plot <- renderPlotly({
-
-    data_prod <- highlight_key(selected_data_prod(), key=~E.product)
-
-    year_min <- min(selected_data_prod()$Year)
-
-    p_prod <- ggplot2::ggplot(data = data_prod) +
+    # Builds ggplot object
+    consumption_plot <- ggplot2::ggplot(data = consumption_data) +
 
       ggplot2::geom_area(mapping = aes(x = Year,
                                        y = EX,
-                                       fill = E.product),
+                                       fill = !!sym(fill_consumption)),
                          position = input$stackfill) +
 
       # ggplot2::scale_x_continuous(limits = c(year_min, max_year), breaks = seq(year_min, max_year, by = 10)) +
@@ -234,57 +254,18 @@ consumption <- function(input, output, session,
       MKHthemes::xy_theme()
 
 
-    p_prod_plotly <- plotly::ggplotly(p_prod,
-                                      height = 850,
-                                      tooltip = c("Year", "EX", "E.product")) %>%
+    # Converts ggplot object into plotly
+    consumption_plotly <- plotly::ggplotly(consumption_plot,
+                                           height = 850,
+                                           tooltip = c("Year", "EX", as.character(key_consumption))) %>%
 
       move_annotations(x = 1.02, y = 0.97, mar = 80) %>%
 
       plotly::layout(showlegend = as.logical(input$legend),
                      legend = list(font = list(size = 9),
                                    tracegroupgap = 0.3,
-                                   itemwidth = 15 #,
-                                   # itemclick = TRUE,
-                                   # itemdoubleclick = TRUE
+                                   itemwidth = 15
                      ))
-
-  })
-
-  # EX by flow or sector stacked area plots
-  output$consumption_flowsec_plot <- renderPlotly({
-
-    data_flowsec <- highlight_key(selected_data_flowsec(), key=~Flow.Sector)
-
-    year_min <- min(selected_data_prod()$Year)
-
-    p_flowsec <- ggplot2::ggplot(data = data_flowsec) +
-
-      ggplot2::geom_area(mapping = aes(x = Year,
-                                       y = EX,
-                                       fill = Flow.Sector),
-                         position = input$stackfill) +
-
-      # ggplot2::scale_x_continuous(limits = c(year_min, max_year), breaks = seq(year_min, max_year, by = 10)) +
-
-      ggplot2::xlab("") +
-      ggplot2::ylab("EX Consumption [ktoe]") +
-      MKHthemes::xy_theme()
-
-
-    p_flowsec_plotly <- plotly::ggplotly(p_flowsec,
-                                         height = 850,
-                                         tooltip = c("Year", "EX", "Flow.Sector")) %>%
-
-      move_annotations(x = 1.02, y = 0.97, mar = 80) %>%
-
-      plotly::layout(showlegend = as.logical(input$legend),
-                     legend = list(font = list(size = 9),
-                                   tracegroupgap = 0.3,
-                                   itemwidth = 15#,
-                                   # itemclick = TRUE,
-                                   # itemdoubleclick = TRUE
-                     ))
-
 
   })
 
@@ -293,47 +274,97 @@ consumption <- function(input, output, session,
 # Outputs - tables
 ################################################################################
 
+
+  # Indexed data
+  output$consumption_indexed_data <- renderDataTable({
+
+    req(input$dataformat)
+
+    if(input$dataformat == "Long"){
+
+      data_long <- selected_data_i() %>%
+        as.data.frame()
+
+      consumption_indexed_table <- DT::datatable(data = data_long,
+                                                 rownames = TRUE,
+                                                 fillContainer = TRUE,
+                                                 # height = 880,
+                                                 options = list(paging = FALSE,    ## paginate the output
+                                                                # pageLength = 20,  ## number of rows to output for each page
+                                                                scrollX = TRUE,   ## enable scrolling on X axis
+                                                                scrollY = "800px",   ## enable scrolling on Y axis
+                                                                autoWidth = FALSE, ## use smart column width handling
+                                                                server = FALSE,   ## use client-side processing
+                                                                dom = 'Bfrtip',
+                                                                columnDefs = list(
+
+                                                                  # Centers columns
+                                                                  list(targets = '_all',
+                                                                      className = 'dt-center'),
+
+                                                                  # Removes columns
+                                                                  list(targets = c(0),
+                                                                      visible = FALSE)
+
+                                                                ))) %>%
+        DT::formatRound(columns=c("EX", "EX.i"), digits=3)
+
+    } else if (input$dataformat == "Wide") {
+
+      data_wide <- selected_data_i() %>%
+        as.data.frame() %>%
+        tidyr::pivot_longer(cols = c("EX", "EX.i"),
+                            names_to = "Metric",
+                            values_to = ".values") %>%
+        tidyr::pivot_wider(names_from = "Year",
+                           values_from = ".values")
+
+      consumption_indexed_table <- DT::datatable(data = data_wide,
+                                                 rownames = TRUE,
+                                                 fillContainer = TRUE,
+                                                 # height = 880,
+                                                 options = list(paging = FALSE,    ## paginate the output
+                                                                # pageLength = 20,  ## number of rows to output for each page
+                                                                scrollX = TRUE,   ## enable scrolling on X axis
+                                                                scrollY = "800px",   ## enable scrolling on Y axis
+                                                                autoWidth = FALSE, ## use smart column width handling
+                                                                server = FALSE,   ## use client-side processing
+                                                                dom = 'Bfrtip',
+                                                                columnDefs = list(
+
+                                                                  # Centers columns
+                                                                  list(targets = '_all',
+                                                                       className = 'dt-center'),
+
+                                                                  # Removes columns
+                                                                  list(targets = c(0),
+                                                                       visible = FALSE)
+
+                                                                ))) %>%
+        DT::formatRound(columns = IEATools::year_cols(data_wide), digits=3)
+
+    } else {
+
+      print("Error")
+
+    }
+
+
+    return(consumption_indexed_table)
+
+  })
+
+  # Consumption data
   output$consumption_data <- renderDataTable({
 
     req(input$dataformat)
 
     if(input$dataformat == "Long"){
 
-      data_long <- selected_data() %>%
+      data_long <- selected_data_consumption() %>%
         as.data.frame()
 
-      allocations_table <- DT::datatable(data = data_long,
-                                         rownames = TRUE,
-                                         fillContainer = TRUE,
-                                         # height = 880,
-                                         options = list(paging = FALSE,    ## paginate the output
-                                                        # pageLength = 20,  ## number of rows to output for each page
-                                                        scrollX = TRUE,   ## enable scrolling on X axis
-                                                        scrollY = "800px",   ## enable scrolling on Y axis
-                                                        autoWidth = FALSE, ## use smart column width handling
-                                                        server = FALSE,   ## use client-side processing
-                                                        dom = 'Bfrtip',
-                                                        columnDefs = list(
-
-                                                          # Centers columns
-                                                          list(targets = '_all',
-                                                              className = 'dt-center'),
-
-                                                          # Removes columns
-                                                          list(targets = c(0, 15),
-                                                              visible = FALSE)
-
-                                                        ))) %>%
-        DT::formatRound(columns=c(".values"), digits=3)
-
-    } else if (input$dataformat == "Wide") {
-
-      data_wide <- selected_data() %>%
-        as.data.frame() %>%
-        tidyr::pivot_wider(names_from = "Year",
-                           values_from = ".values")
-
-      allocations_table <- DT::datatable(data = data_wide,
+      consumption_table <- DT::datatable(data = data_long,
                                          rownames = TRUE,
                                          fillContainer = TRUE,
                                          # height = 880,
@@ -351,7 +382,38 @@ consumption <- function(input, output, session,
                                                                className = 'dt-center'),
 
                                                           # Removes columns
-                                                          list(targets = c(0, 13),
+                                                          list(targets = c(0),
+                                                               visible = FALSE)
+
+                                                        ))) %>%
+        DT::formatRound(columns=c("EX"), digits=3)
+
+    } else if (input$dataformat == "Wide") {
+
+      data_wide <- selected_data_consumption() %>%
+        as.data.frame() %>%
+        tidyr::pivot_wider(names_from = "Year",
+                           values_from = "EX")
+
+      consumption_table <- DT::datatable(data = data_wide,
+                                         rownames = TRUE,
+                                         fillContainer = TRUE,
+                                         # height = 880,
+                                         options = list(paging = FALSE,    ## paginate the output
+                                                        # pageLength = 20,  ## number of rows to output for each page
+                                                        scrollX = TRUE,   ## enable scrolling on X axis
+                                                        scrollY = "800px",   ## enable scrolling on Y axis
+                                                        autoWidth = FALSE, ## use smart column width handling
+                                                        server = FALSE,   ## use client-side processing
+                                                        dom = 'Bfrtip',
+                                                        columnDefs = list(
+
+                                                          # Centers columns
+                                                          list(targets = '_all',
+                                                               className = 'dt-center'),
+
+                                                          # Removes columns
+                                                          list(targets = c(0),
                                                                visible = FALSE)
 
                                                         ))) %>%
@@ -363,45 +425,23 @@ consumption <- function(input, output, session,
 
     }
 
-    # DT::datatable(data = data,
-    #               rownames = TRUE,
-    #               fillContainer = TRUE,
-    #               # height = 880,
-    #               options = list(paging = FALSE,    ## paginate the output
-    #                              # pageLength = 20,  ## number of rows to output for each page
-    #                              scrollX = TRUE,   ## enable scrolling on X axis
-    #                              scrollY = "800px",   ## enable scrolling on Y axis
-    #                              autoWidth = TRUE, ## use smart column width handling
-    #                              server = FALSE,   ## use client-side processing
-    #                              dom = 'Bfrtip',
-    #                              columnDefs = list(
-    #
-    #                                # Centers columns
-    #                                list(targets = '_all',
-    #                                     className = 'dt-center'),
-    #
-    #                                # Removes columns
-    #                                list(targets = c(0, 15),
-    #                                     visible = FALSE)
-    #
-    #                                ))) %>%
-    #
-    #   DT::formatRound(columns=c(".values"), digits=3)
 
-    return(allocations_table)
+    return(consumption_table)
 
   })
 
+
+################################################################################
+# Outputs - downloads
+################################################################################
 
   output$download_data <- downloadHandler(
 
     filename = function() {
 
       paste("PFU_",
-            as.character(unique(selected_data()$Ef.product)),
-            "_",
-            as.character(unique(selected_data()$Destination)),
-            "_",
+            as.character(unique(selected_data_consumption()$Aggregation.by)),
+            ".Consumption.Data_",
             Sys.Date(),
             ".csv",
             sep="")
@@ -413,16 +453,16 @@ consumption <- function(input, output, session,
 
       if(input$dataformat == "Long"){
 
-        data <- selected_data() %>%
+        data <- selected_data_consumption() %>%
           as.data.frame()
 
 
       } else if (input$dataformat == "Wide") {
 
-        data <- selected_data() %>%
+        data <- selected_data_consumption() %>%
           as.data.frame() %>%
           tidyr::pivot_wider(names_from = "Year",
-                             values_from = ".values")
+                             values_from = "EX")
 
       } else {
 
@@ -435,16 +475,12 @@ consumption <- function(input, output, session,
 
   )
 
-################################################################################
-# Outputs - downloads
-################################################################################
-
 
   output$download_alldata <- downloadHandler(
 
     filename = function() {
 
-      paste("PFU_",
+      paste("PFU_All.Consumption.Data_",
             Sys.Date(),
             ".csv",
             sep="")
@@ -456,16 +492,16 @@ consumption <- function(input, output, session,
 
       if(input$dataformat == "Long"){
 
-        data <- allocations_data %>%
+        data <- Agg_all_data %>%
           as.data.frame()
 
 
       } else if (input$dataformat == "Wide") {
 
-        data <- allocations_data %>%
+        data <- Agg_all_data %>%
           as.data.frame() %>%
           tidyr::pivot_wider(names_from = "Year",
-                             values_from = ".values")
+                             values_from = "EX")
 
       } else {
 
