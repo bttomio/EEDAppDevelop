@@ -13,9 +13,12 @@ library(PFUSetup)
 ## Downloading data from drake cache
 ################################################################################
 
-# Establishes path to the drake cache
-cache_path <- PFUSetup::get_abs_paths()$drake_cache_folder
+# Establishes path to the drake cache when cache is created by PFU-Database and stored locally
+# cache_path <- PFUSetup::get_abs_paths()$drake_cache_folder
 # cache_path <- file.path(dirname(getwd()), "PFU-Database", ".drake")
+
+# Establishes path to the drake cache when the cache is stored in the pfudatabase azure storage account
+cache_path <- file.path("Cache_Folder")
 
 # Creates a list of the countries in the drake workflow, set in the _drake.R script
 countries <- drake::readd(SEAPSUTWorkflow::target_names$countries,

@@ -23,9 +23,6 @@ library(DT)
 library(networkD3)
 library(plotly)
 library(scales)
-library(gt)
-library(xtable)
-
 library(MKHthemes)
 library(colorspace)
 

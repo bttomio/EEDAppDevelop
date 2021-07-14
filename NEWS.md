@@ -1,3 +1,7 @@
+# EEDAppDevelop 0.0.4 (2021-07-14)
+
+* Adding cache path which corresponds to azure storage mount
+
 # EEDAppDevelop 0.0.3 (2021-05-28)
 
 * Adding PFU consumption module.
