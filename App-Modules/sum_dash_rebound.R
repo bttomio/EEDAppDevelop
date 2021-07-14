@@ -9,31 +9,30 @@ rebound_dashUI <- function(id) {
 
     # withMathJax(),
 
-    ################################################################################
-    # Table properties #
-    ################################################################################
-
-    # # Sets table style - Rebound Dashboard Box, Table content
-    # tags$head(tags$style("#rebound_dashboard table {background-color: white; }",
-    #                      media="screen",
-    #                      type="text/css")),
+################################################################################
+# Table properties #
+################################################################################
 
     # Sets table style - Rebound results table
-    tags$head(tags$style("#results_table table {background-color: white; }",
+    tags$head(tags$style("#results_table table {background-color: white;
+                                                font-size: 14px;}",
                          media="screen",
                          type="text/css")),
 
     # Sets table style - Stages table
-    tags$head(tags$style("#stages_table table {background-color: white; }",
+    tags$head(tags$style("#stages_table table {background-color: white;
+                                               font-size: 14px;}",
                          media="screen",
                          type="text/css")),
 
+    # Changing height of checkboxes
 
 
 
-    ################################################################################
-    # Visualisations #
-    ################################################################################
+
+################################################################################
+# Visualisations #
+################################################################################
 
 
     # # Rebound graph - faceted
@@ -66,6 +65,7 @@ rebound_dashUI <- function(id) {
       closable = FALSE,
       solidHeader = FALSE,
       collapsible = FALSE,
+      style = "padding:0px;",
       sidebar = boxSidebar(
 
         icon = tags$b("Options"),
@@ -188,7 +188,7 @@ rebound_dashUI <- function(id) {
         splitLayout(
 
           style = "vertical-align: middle;
-                       horizontal-align: left;",
+                   horizontal-align: left;",
 
           cellArgs = list(style = "padding: 0px"),
 
@@ -301,6 +301,8 @@ rebound_dashUI <- function(id) {
       fluidRow(
         column(4,
                tags$h4("Energy"),
+               style = "padding-top:0px;
+                        padding-bottom:0px;",
                align = "center",
                plotOutput(outputId = ns("rebound_graph_energy_i")),
                splitLayout(
@@ -311,12 +313,15 @@ rebound_dashUI <- function(id) {
                                label = "Guidelines",
                                value = TRUE),
                  cellWidths = c("50%", "50%"),
-                 cellArgs = list(style = "padding: 0px",
+                 cellArgs = list(style = "padding-top:0px;
+                                          padding-bottom:0px;",
                                  align = "center")
-               )
-        ),
+                 )
+               ),
         column(4,
                tags$h4("Expenditure"),
+               style = "padding-top:0px;
+                        padding-bottom:0px;",
                align = "center",
                plotOutput(outputId = ns("rebound_graph_expenditure_i")),
                splitLayout(
@@ -327,12 +332,15 @@ rebound_dashUI <- function(id) {
                                label = "Guidelines",
                                value = TRUE),
                  cellWidths = c("50%", "50%"),
-                 cellArgs = list(style = "padding: 0px",
+                 cellArgs = list(style = "padding-top:0px;
+                                          padding-bottom:0px;",
                                  align = "center")
-               )
-        ),
+                 )
+               ),
         column(4,
                tags$h4("Consumption"),
+               style = "padding-top:0px;
+                        padding-bottom:0px;",
                align = "center",
                plotOutput(outputId = ns("rebound_graph_preferences_i")),
                splitLayout(
@@ -340,64 +348,14 @@ rebound_dashUI <- function(id) {
                                label = "Guidelines",
                                value = TRUE),
                  cellWidths = c("50%", "50%"),
-                 cellArgs = list(style = "padding: 0px",
+                 cellArgs = list(style = "padding-top:0px;
+                                          padding-bottom:0px;",
                                  align = "center")
+                 )
                )
-        )
-      ),
+        ) # Closes fluidRow for checkboxes
 
-      splitLayout(
-
-        style = "vertical-align: middle;
-                 horizontal-align: left;",
-
-        cellWidths = c("65%", "35%"),
-
-        cellArgs = list(style = "padding: 0px",
-                        align = "center"
-        )#,
-
-        # tableOutput(outputId = ns("stages_table")),
-        #
-        # tableOutput(outputId = ns("results_table"))
-
-      )
-
-      # plotOutput(outputId = ns("rebound_graph_energy_i"))
-
-    ), # Close box
-    #
-    #     # Rebound graph - expenditure
-    #     box(
-    #       width = 4,
-    #       # height = 450,
-    #       title = "Expenditure",
-    #       id = "rebound_graphbox_expenditure_i",
-    #       closable = FALSE,
-    #       # status = "warning",
-    #       solidHeader = FALSE,
-    #       collapsible = FALSE,
-    #       plotOutput(outputId = ns("rebound_graph_expenditure_i"))
-    #     ),
-    #
-    #     # Rebound graph - preferences
-    #     box(
-    #       width = 4,
-    #       # height = 450,
-    #       title = "Consumption",
-    #       id = "rebound_graphbox_preferences_i",
-    #       closable = FALSE,
-    #       # status = "warning",
-    #       solidHeader = FALSE,
-    #       collapsible = FALSE,
-    #       enable_sidebar = FALSE,
-    #       sidebar_width = 25,
-    #       sidebar_start_open = FALSE,
-    #       sidebar_background = "#FFFFFF",
-    #       sidebar_title = "Variables",
-    #       sidebar_content = tagList(),
-    #       plotOutput(outputId = ns("rebound_graph_preferences_i"))
-    #     ),
+      ), # Closes graph box
 
     # Stages table
     box(
@@ -411,7 +369,7 @@ rebound_dashUI <- function(id) {
       collapsible = FALSE,
       enable_sidebar = FALSE,
       tableOutput(outputId = ns("stages_table"))
-    ),
+      ),
 
     # Rebound results table
     box(
@@ -425,11 +383,10 @@ rebound_dashUI <- function(id) {
       collapsible = FALSE,
       enable_sidebar = FALSE,
       tableOutput(outputId = ns("results_table"))
-    ),
+      )
 
+    ) # Closes UI fluidRow
 
-
-  )
 
 } # Close UI module
 
@@ -951,13 +908,11 @@ rebound_dash <- function(input, output, session,
                                             # "Sum of indirect",
                                             "Total"
       ), .before = "Rebound term")
-    # dplyr::select(-`Rebound term`) %>%
-    # magrittr::set_colnames(c("Rebound effect", "Value [%]"))
 
     rebound_results_table_data
 
-
   })
+
 
   # Creates rebound stages table
   output$stages_table <- renderTable({
@@ -1010,8 +965,6 @@ rebound_dash <- function(input, output, session,
 
 
     rebound_stages_table_data
-    # return(rebound_stages_table_data)
-
 
   })
 

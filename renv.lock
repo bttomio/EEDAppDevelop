@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.0.3",
+    "Version": "4.1.0",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -692,13 +692,6 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "7d7f283939f563670a697165b2cf5560"
-    },
-    "gt": {
-      "Package": "gt",
-      "Version": "0.2.2",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "4eb28493ed31ff8f5f240d0fb5929ecb"
     },
     "gtable": {
       "Package": "gtable",
