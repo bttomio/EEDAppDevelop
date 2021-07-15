@@ -1,7 +1,6 @@
 # Base image https://hub.docker.com/u/rocker/
 FROM rocker/shiny:latest
 
-# System libraries of general use
 ## Install debian packages
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
     libxml2-dev \
@@ -13,7 +12,8 @@ RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get clean
 
-# Copy necessary files
+## Create folder to mount storage
+WORKDIR /Cache_Folder
 
 ## renv.lock file
 COPY /renv.lock ./renv.lock
