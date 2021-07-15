@@ -12,9 +12,10 @@ RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get clean
 
-## Create folder to mount storage
-WORKDIR /Cache_Folder
 
+# Copy required files
+## Empty directory to which azure will mount the drake cache
+COPY /Cache_Folder ./Cache_Folder
 ## renv.lock file
 COPY /renv.lock ./renv.lock
 ## app file
