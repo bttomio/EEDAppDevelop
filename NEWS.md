@@ -1,3 +1,5 @@
+# EEDAppDevelop 0.0.5 (2021-07-21)
+
 * Dockerfile now building app image from base image 'EEDAppBaseImage'.
 
 # EEDAppDevelop 0.0.4 (2021-07-14)
