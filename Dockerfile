@@ -1,23 +1,19 @@
 # Base image https://hub.docker.com/u/rocker/
-FROM rocker/shiny:latest
+FROM zekemarshall/eed-app-base-image:latest
 
-## Install debian packages
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    libxml2-dev \
-    libssl-dev \
-    libudunits2-dev
+# Test Section - Add sshd_config
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && apt-get install -y openssh-server \
+    && echo "root:Docker!" | chpasswd
 
-## Update system libraries
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get clean
+## Copy the sshd_config file to the /etc/ssh/ directory
+COPY sshd_config /etc/ssh/
 
+## Open port 2222 for SSH access
+EXPOSE 80 2222
 
 # Copy required files
-## Empty directory to which azure will mount the drake cache
-COPY /Cache_Folder ./Cache_Folder
-## renv.lock file
-COPY /renv.lock ./renv.lock
 ## app file
 COPY /app.R /app.R
 ## App modules folder
@@ -26,12 +22,11 @@ COPY /App-Modules /App-Modules
 COPY /datadoctest.Rmd /datadoctest.Rmd
 ## Database documentation bibliography
 COPY /databasedocumentation.bib /databasedocumentation.bib
+## Rebound documentation
+COPY /reboundtools_doc.Rmd /reboundtools_doc.Rmd
 ## www folder
 COPY /www /www
 
-# Install renv & restore packages
-RUN Rscript -e 'install.packages("renv")'
-RUN Rscript -e 'renv::restore()'
 
 # Expose port
 EXPOSE 3838
