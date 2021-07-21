@@ -1,3 +1,7 @@
+# EEDAppDevelop 0.0.6 (2021-07-21)
+
+* Specifying path to drake cache
+
 # EEDAppDevelop 0.0.5 (2021-07-21)
 
 * Dockerfile now building app image from base image 'EEDAppBaseImage'.
