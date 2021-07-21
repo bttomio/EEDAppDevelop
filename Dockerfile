@@ -1,21 +1,11 @@
 # Base image https://hub.docker.com/u/rocker/
-FROM rocker/shiny:latest
-
-## Install debian packages
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    libxml2-dev \
-    libssl-dev \
-    libudunits2-dev
-
-## Update system libraries
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get clean
+FROM zekemarshall/eed-app-base-image:latest
 
 # Test Section - Add sshd_config
-## Install OpenSSH and set the password for root to "Docker!". In this example, "apk add" is the install instruction for an Alpine Linux-based image.
-RUN apt-get install openssh \
-     && echo "root:Docker!" | chpasswd
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && apt-get install -y openssh-server \
+    && echo "root:Docker!" | chpasswd
 
 ## Copy the sshd_config file to the /etc/ssh/ directory
 COPY sshd_config /etc/ssh/
@@ -24,8 +14,6 @@ COPY sshd_config /etc/ssh/
 EXPOSE 80 2222
 
 # Copy required files
-## Empty directory to which azure will mount the drake cache
-COPY /Cache_Folder ./Cache_Folder
 ## app file
 COPY /app.R /app.R
 ## App modules folder
