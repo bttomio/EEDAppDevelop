@@ -1,16 +1,5 @@
 # Base image https://hub.docker.com/u/rocker/
-FROM zekemarshall/EEDAppBaseImage:latest
-
-## Install debian packages
-RUN apt-get update -qq && apt-get -y --no-install-recommends install \
-    libxml2-dev \
-    libssl-dev \
-    libudunits2-dev
-
-## Update system libraries
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get clean
+FROM zekemarshall/eed-app-base-image:latest
 
 # Test Section - Add sshd_config
 ## Install OpenSSH and set the password for root to "Docker!". In this example, "apk add" is the install instruction for an Alpine Linux-based image.
