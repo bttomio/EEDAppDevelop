@@ -1,3 +1,7 @@
+# EEDAppDevelop 0.0.8 (2021-07-21)
+
+* Fixing path to drake cache
+
 # EEDAppDevelop 0.0.7 (2021-07-21)
 
 * Setting path to drake cache relative to working directory
