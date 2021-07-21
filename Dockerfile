@@ -1,5 +1,5 @@
 # Base image https://hub.docker.com/u/rocker/
-FROM rocker/shiny:latest
+FROM zekemarshall/EEDAppBaseImage:latest
 
 ## Install debian packages
 RUN apt-get update -qq && apt-get -y --no-install-recommends install \
@@ -24,8 +24,6 @@ COPY sshd_config /etc/ssh/
 EXPOSE 80 2222
 
 # Copy required files
-## Empty directory to which azure will mount the drake cache
-COPY /Cache_Folder ./Cache_Folder
 ## app file
 COPY /app.R /app.R
 ## App modules folder
