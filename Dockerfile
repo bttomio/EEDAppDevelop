@@ -13,6 +13,18 @@ RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get clean
 
+# Test Section - Add sshd_config
+
+# Install OpenSSH and set the password for root to "Docker!". In this example, "apk add" is the install instruction for an Alpine Linux-based image.
+RUN apt-get install openssh \
+     && echo "root:Docker!" | chpasswd
+
+# Copy the sshd_config file to the /etc/ssh/ directory
+COPY sshd_config /etc/ssh/
+
+# Open port 2222 for SSH access
+EXPOSE 80 2222
+
 # Copy necessary files
 
 ## renv.lock file
@@ -25,6 +37,8 @@ COPY /App-Modules /App-Modules
 COPY /datadoctest.Rmd /datadoctest.Rmd
 ## Database documentation bibliography
 COPY /databasedocumentation.bib /databasedocumentation.bib
+## Rebound documentation
+COPY /reboundtools_doc.Rmd /reboundtools_doc.Rmd
 ## www folder
 COPY /www /www
 
