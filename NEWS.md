@@ -1,3 +1,7 @@
+# EEDAppDevelop 0.0.9 (2021-07-26)
+
+* Adding pause to delay reading of cache until after storage is mounted.
+
 # EEDAppDevelop 0.0.8 (2021-07-21)
 
 * Fixing path to drake cache
